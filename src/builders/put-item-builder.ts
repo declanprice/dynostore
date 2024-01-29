@@ -1,9 +1,12 @@
-import {DynamoDBClient, PutItemCommand, TransactWriteItem} from "@aws-sdk/client-dynamodb";
+import {AttributeValue, DynamoDBClient, PutItemCommand} from "@aws-sdk/client-dynamodb";
 import {marshall} from "@aws-sdk/util-dynamodb";
+import {ConditionExpression, convertToExpression} from "../expressions/condition/condition-expression";
 
 type PutBuilderOptions = {
     item?: any,
     conditionExpression?: string
+    expressionAttributeNames?: { [key: string]: string }
+    expressionAttributeValues?: { [key: string]: AttributeValue }
 }
 
 export class PutItemBuilder {
@@ -17,12 +20,22 @@ export class PutItemBuilder {
         return this;
     }
 
-    condition(): PutItemBuilder {
+    condition(...conditions: ConditionExpression[]): PutItemBuilder {
+        const {expression, expressionAttributeNames, expressionAttributeValues} = convertToExpression(...conditions);
+        this.options.conditionExpression = expression;
+        this.options.expressionAttributeNames = {
+            ...this.options.expressionAttributeNames,
+            ...expressionAttributeNames
+        }
+        this.options.expressionAttributeValues = {
+            ...this.options.expressionAttributeValues,
+            ...expressionAttributeValues
+        }
         return this;
     }
 
     async exec(): Promise<void> {
-        const { item, conditionExpression } = this.options;
+        const { item, conditionExpression, expressionAttributeNames, expressionAttributeValues } = this.options;
 
         if (!item) throw new Error('[invalid options] - item is missing');
 
@@ -30,10 +43,10 @@ export class PutItemBuilder {
             TableName: this.tableName,
             Item: marshall(item),
             ConditionExpression: conditionExpression,
+            ExpressionAttributeNames: expressionAttributeNames,
+            ExpressionAttributeValues: expressionAttributeValues
         }))
     }
-
-    tx(): TransactWriteItem {}
 }
 
 

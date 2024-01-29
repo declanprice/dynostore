@@ -1,10 +1,10 @@
-export type ContainsExpression = {
+export type ContainsCondition = {
     type: 'contains',
-    path,
-    value
+    path: string,
+    value: string
 }
 
-export const contains = (path: string, value: string): ContainsExpression => {
+export const contains = (path: string, value: string): ContainsCondition => {
     return {
         type: 'contains',
         path,

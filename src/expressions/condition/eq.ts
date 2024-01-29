@@ -1,13 +1,15 @@
-export type EqExpression = {
+import {NativeAttributeValue} from "@aws-sdk/util-dynamodb";
+
+export type EqCondition = {
     type: 'eq',
-    name: string;
-    value: string
+    path: string;
+    value: NativeAttributeValue,
 }
 
-export const eq = (name: string, value: string): EqExpression => {
+export const eq = (path: string, value: NativeAttributeValue): EqCondition => {
     return {
         type: 'eq',
-        name,
+        path,
         value
     }
 }

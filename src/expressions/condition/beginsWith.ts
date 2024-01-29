@@ -1,10 +1,10 @@
-export type BeginsWithExpression = {
+export type BeginsWithCondition = {
     type: 'beginsWith',
     path: string,
     value: string
 }
 
-export const beginsWith = (path: string, value: string): BeginsWithExpression => {
+export const beginsWith = (path: string, value: string): BeginsWithCondition => {
     return {
         type: 'beginsWith',
         path,

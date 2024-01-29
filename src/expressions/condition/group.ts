@@ -2,12 +2,12 @@ import {ConditionExpression} from "./condition-expression";
 
 export type GroupExpression = {
     type: 'group',
-    expressions: ConditionExpression[];
+    conditions: ConditionExpression[];
 }
 
-export const group = (expressions: ConditionExpression[]): GroupExpression => {
+export const group = (...conditions: ConditionExpression[]): GroupExpression => {
     return {
         type: 'group',
-        expressions
+        conditions
     }
 }
