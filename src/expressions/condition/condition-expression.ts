@@ -19,9 +19,7 @@ import {AnyOfCondition} from "./anyOf";
 import {SizeCondition} from "./size";
 import {TypeCondition} from "./type";
 
-export type KeyConditionExpression = EqCondition;
-
-export type FilterConditionExpression = EqCondition;
+export type KeyConditionExpression = EqCondition | LtCondition | LteCondition | GtCondition | GteCondition | BeginsWithCondition | BetweenCondition;
 
 export type ConditionExpression =  GroupExpression | AndCondition | OrExpression | NotCondition | EqCondition | NotEqCondition | GtCondition | GteCondition | LtCondition | LteCondition | BeginsWithCondition | BetweenCondition | ExistsCondition | NotExistsCondition | ContainsCondition | AnyOfCondition | SizeCondition | TypeCondition;
 
