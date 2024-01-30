@@ -1,8 +1,8 @@
 {
   "name": "@declanprice/dynostore",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "lightweight query builder for dynamodb using AWS SDK V3",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
