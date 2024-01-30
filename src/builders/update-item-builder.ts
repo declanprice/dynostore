@@ -50,7 +50,7 @@ export class UpdateItemBuilder<Item> {
     const result = await this.client.send(
       new UpdateItemCommand({
         TableName: this.tableName,
-        Key: marshall(key),
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         UpdateExpression: updateExpression.expression,
         ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,
@@ -72,7 +72,7 @@ export class UpdateItemBuilder<Item> {
     return {
       Update: {
         TableName: this.tableName,
-        Key: marshall(key),
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         UpdateExpression: updateExpression.expression,
         ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,

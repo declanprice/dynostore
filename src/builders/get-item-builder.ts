@@ -42,7 +42,7 @@ export class GetItemBuilder<Item> {
     const response = await this.client.send(
       new GetItemCommand({
         TableName: this.tableName,
-        Key: marshall(key),
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         ConsistentRead: consistent,
         ProjectionExpression: projection
       })
@@ -61,7 +61,7 @@ export class GetItemBuilder<Item> {
     return {
       Get: {
         TableName: this.tableName,
-        Key: marshall(key),
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         ProjectionExpression: projection
       }
     }

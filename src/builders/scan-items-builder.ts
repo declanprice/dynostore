@@ -79,7 +79,7 @@ export class ScanItemsBuilder<Item> {
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         Limit: limit,
-        ExclusiveStartKey: marshall(startAt),
+        ExclusiveStartKey: marshall(startAt, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         TotalSegments: parallel?.totalSegments,
         Segment: parallel?.segment
       })

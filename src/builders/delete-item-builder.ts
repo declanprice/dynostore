@@ -45,7 +45,7 @@ export class DeleteItemBuilder<Item> {
     const result = await this.client.send(
       new DeleteItemCommand({
         TableName: this.tableName,
-        Key: marshall(key),
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         ConditionExpression: condition?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
@@ -67,7 +67,7 @@ export class DeleteItemBuilder<Item> {
     return {
       Delete: {
         TableName: this.tableName,
-        Key: marshall(key),
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         ConditionExpression: condition?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,

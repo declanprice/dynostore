@@ -42,7 +42,7 @@ export class PutItemBuilder<Item> {
     const result = await this.client.send(
       new PutItemCommand({
         TableName: this.tableName,
-        Item: marshall(item),
+        Item: marshall(item, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
@@ -63,7 +63,7 @@ export class PutItemBuilder<Item> {
     return {
       Put: {
         TableName: this.tableName,
-        Item: marshall(item),
+        Item: marshall(item, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
         ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,

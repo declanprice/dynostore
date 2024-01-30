@@ -35,17 +35,20 @@ export class QueryItemsBuilder<Item> {
     private readonly client: DynamoDBClient
   ) {}
 
-  pk(path: string, value: string | number) {
+  pk(path: string, value: string | number): QueryItemsBuilder<Item> {
     this.options.pk = {
       path,
       value
     }
+    return this
   }
-  sk(path: string, condition: KeyConditionExpression) {
+
+  sk(path: string, condition: KeyConditionExpression): QueryItemsBuilder<Item> {
     this.options.sk = {
       path,
       condition: createConditionExpression(this.attributes, condition)
     }
+    return this
   }
 
   filter(...conditions: ConditionExpression[]): QueryItemsBuilder<Item> {
@@ -88,7 +91,7 @@ export class QueryItemsBuilder<Item> {
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         Limit: limit,
-        ExclusiveStartKey: marshall(startAt),
+        ExclusiveStartKey: marshall(startAt, { removeUndefinedValues: true }),
         ScanIndexForward: sort !== 'desc'
       })
     )
