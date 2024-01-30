@@ -65,7 +65,7 @@ export const createUpdateExpression = (
   }
 
   return {
-    expression: expressions.join(',').trim(),
+    expression: expressions.join(' ').trim(),
     expressionAttributeNames: attributes.expressionAttributeNames,
     expressionAttributeValues: attributes.expressionAttributeValues
   }

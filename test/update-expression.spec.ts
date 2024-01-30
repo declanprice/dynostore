@@ -104,7 +104,7 @@ describe('UpdateExpression', () => {
 
   it('should join multiple update conditions', () => {
     const expression = createUpdateExpression(attributes, set('age', 25), del('name', 'declan'))
-    expect(expression.expression).toEqual('SET #0 = :1,DELETE #2 :3')
+    expect(expression.expression).toEqual('SET #0 = :1 DELETE #2 :3')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'age',
       '#2': 'name'
