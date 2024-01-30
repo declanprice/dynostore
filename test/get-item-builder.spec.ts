@@ -5,7 +5,8 @@ import {GetItemBuilder} from "../src/builders/get-item-builder";
 
 const testTableName = 'test_table';
 const testClient: any = mockClient(new DynamoDBClient());
-const testId = '123';
+const validTestId = '123';
+const invalidTestId = '4444';
 
 describe('GetItemBuilder', () => {
 
@@ -13,17 +14,31 @@ describe('GetItemBuilder', () => {
         testClient.reset();
 
         testClient
-            .on(GetItemCommand)
-            .resolves({
-                Item: { id: { S: testId } },
+            .on(GetItemCommand, {
+                Key: {
+                    id: {
+                        S: validTestId
+                    }
+                }
             })
+            .resolves({
+                Item: { id: { S: validTestId }, name: {S: 'test'}, age: {N: '25'}  },
+            })
+            .on(GetItemCommand, {
+                Key: {
+                    id: {
+                        S: invalidTestId
+                    }
+                }
+            })
+            .resolves({Item: undefined})
     })
 
     it('should send GetItemCommand with configured options', async() => {
         const builder = new GetItemBuilder(testTableName, testClient);
 
         const item = await builder
-            .key({id: testId})
+            .key({id: validTestId})
             .consistent(true)
             .exec()
 
@@ -31,13 +46,24 @@ describe('GetItemBuilder', () => {
             TableName: testTableName,
             Key: {
                 id: {
-                    S: testId
+                    S: validTestId
                 }
             },
             ConsistentRead: true
         })
 
-        expect(item).toEqual({id: testId })
+        expect(item).toEqual({id: validTestId, name: 'test', age: 25})
+    })
+
+    it('should return null if Item is undefined', async() => {
+        const builder = new GetItemBuilder(testTableName, testClient);
+
+        const item = await builder
+            .key({id: invalidTestId})
+            .consistent(true)
+            .exec()
+
+        expect(item).toEqual(null)
     })
 })
 
