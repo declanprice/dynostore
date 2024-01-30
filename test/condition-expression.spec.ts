@@ -1,4 +1,4 @@
-import { createConditionExpression } from '../src/expressions/condition/create-condition-expression'
+import { createConditionExpression } from '../src/expressions/condition/condition-expression'
 import { eq } from '../src/expressions/condition/eq'
 import { and } from '../src/expressions/condition/and'
 import { or } from '../src/expressions/condition/or'

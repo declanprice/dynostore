@@ -1,13 +1,10 @@
 import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
-import {
-  CreateConditionExpression,
-  createConditionExpression
-} from '../expressions/condition/create-condition-expression'
+import { ConditionExpression, createConditionExpression } from '../expressions/condition/condition-expression'
 import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
 
-type ScanItemsBuilderOptions = {
+type ScanItemsBuilderOptions<Item> = {
   indexName?: string
   projection?: string
   filter?: Expression
@@ -21,45 +18,45 @@ type ScanItemsBuilderOptions = {
   }
 }
 
-export class ScanItemsBuilder {
-  private options: ScanItemsBuilderOptions = {}
+export class ScanItemsBuilder<Item> {
+  private options: ScanItemsBuilderOptions<Item> = {}
 
   constructor(
     readonly tableName: string,
     readonly client: DynamoDBClient
   ) {}
 
-  using(indexName: string): ScanItemsBuilder {
+  using(indexName: string): ScanItemsBuilder<Item> {
     this.options.indexName = indexName
     return this
   }
 
-  filter(...conditions: CreateConditionExpression[]): ScanItemsBuilder {
+  filter(...conditions: ConditionExpression[]): ScanItemsBuilder<Item> {
     this.options.filter = createConditionExpression('filter', ...conditions)
     return this
   }
 
-  project(projection: string): ScanItemsBuilder {
+  project(projection: string): ScanItemsBuilder<Item> {
     this.options.projection = projection
     return this
   }
 
-  limit(limit: number): ScanItemsBuilder {
+  limit(limit: number): ScanItemsBuilder<Item> {
     this.options.limit = limit
     return this
   }
 
-  startAt(key: ItemKey): ScanItemsBuilder {
+  startAt(key: ItemKey): ScanItemsBuilder<Item> {
     this.options.startAt = key
     return this
   }
 
-  consistent(): ScanItemsBuilder {
+  consistent(): ScanItemsBuilder<Item> {
     this.options.consistent = true
     return this
   }
 
-  parallel(totalSegments: number, segment: number): ScanItemsBuilder {
+  parallel(totalSegments: number, segment: number): ScanItemsBuilder<Item> {
     this.options.parallel = {
       totalSegments,
       segment

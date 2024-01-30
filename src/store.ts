@@ -12,29 +12,27 @@ export class Store {
     readonly client: DynamoDBClient
   ) {}
 
-  get() {
-    return new GetItemBuilder(this.tableName, this.client)
+  get<Item>() {
+    return new GetItemBuilder<Item>(this.tableName, this.client)
   }
 
-  put() {
-    return new PutItemBuilder(this.tableName, this.client)
+  put<Item>() {
+    return new PutItemBuilder<Item>(this.tableName, this.client)
   }
 
-  update() {
-    return new UpdateItemBuilder(this.tableName, this.client)
+  update<Item>() {
+    return new UpdateItemBuilder<Item>(this.tableName, this.client)
   }
 
-  delete() {
-    return new DeleteItemBuilder(this.tableName, this.client)
+  delete<Item>() {
+    return new DeleteItemBuilder<Item>(this.tableName, this.client)
   }
 
-  query() {
-    return new QueryItemsBuilder(this.tableName, this.client)
+  query<Item>() {
+    return new QueryItemsBuilder<Item>(this.tableName, this.client)
   }
 
-  scan() {
-    return new ScanItemsBuilder(this.tableName, this.client)
+  scan<Item>() {
+    return new ScanItemsBuilder<Item>(this.tableName, this.client)
   }
 }
-
-const store = new Store('asd', {} as any)

@@ -1,14 +1,14 @@
 import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import {
-  CreateConditionExpression,
+  ConditionExpression,
   createConditionExpression,
   KeyConditionExpression
-} from '../expressions/condition/create-condition-expression'
+} from '../expressions/condition/condition-expression'
 import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
 
-type QueryBuilderOptions = {
+type QueryBuilderOptions<Item> = {
   indexName?: string
   pk?: {
     path: string
@@ -25,8 +25,8 @@ type QueryBuilderOptions = {
   sort?: 'asc' | 'desc'
 }
 
-export class QueryItemsBuilder {
-  private options: QueryBuilderOptions = {}
+export class QueryItemsBuilder<Item> {
+  private options: QueryBuilderOptions<Item> = {}
 
   constructor(
     private readonly tableName: string,
@@ -46,32 +46,32 @@ export class QueryItemsBuilder {
     }
   }
 
-  filter(...conditions: CreateConditionExpression[]): QueryItemsBuilder {
+  filter(...conditions: ConditionExpression[]): QueryItemsBuilder<Item> {
     this.options.filter = createConditionExpression('filter', ...conditions)
     return this
   }
 
-  project(projection: string): QueryItemsBuilder {
+  project(projection: string): QueryItemsBuilder<Item> {
     this.options.projection = projection
     return this
   }
 
-  limit(limit: number): QueryItemsBuilder {
+  limit(limit: number): QueryItemsBuilder<Item> {
     this.options.limit = limit
     return this
   }
 
-  startAt(key: ItemKey): QueryItemsBuilder {
+  startAt(key: ItemKey): QueryItemsBuilder<Item> {
     this.options.startAt = key
     return this
   }
 
-  sort(dir: 'asc' | 'desc'): QueryItemsBuilder {
+  sort(dir: 'asc' | 'desc'): QueryItemsBuilder<Item> {
     this.options.sort = dir
     return this
   }
 
-  async exec<ItemType>(): Promise<{ items: ItemType[]; lastKey: ItemKey | null }> {
+  async exec(): Promise<{ items: Item[]; lastKey: ItemKey | null }> {
     const { pk, sk, projection, filter, limit, startAt, sort } = this.options
 
     if (!pk) throw new Error('[invalid options] - pk is missing')
@@ -96,7 +96,7 @@ export class QueryItemsBuilder {
     }
 
     return {
-      items: response.Items.map((i) => unmarshall(i)) as ItemType[],
+      items: response.Items.map((i) => unmarshall(i)) as Item[],
       lastKey: response.LastEvaluatedKey ? unmarshall(response.LastEvaluatedKey) : null
     }
   }

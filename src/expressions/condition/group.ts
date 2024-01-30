@@ -1,11 +1,11 @@
-import { CreateConditionExpression } from './create-condition-expression'
+import { ConditionExpression } from './condition-expression'
 
 export type GroupExpression = {
   type: 'group'
-  conditions: CreateConditionExpression[]
+  conditions: ConditionExpression[]
 }
 
-export const group = (...conditions: CreateConditionExpression[]): GroupExpression => {
+export const group = (...conditions: ConditionExpression[]): GroupExpression => {
   return {
     type: 'group',
     conditions

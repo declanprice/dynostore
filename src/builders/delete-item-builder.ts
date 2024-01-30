@@ -1,10 +1,7 @@
 import { DeleteItemCommand, DynamoDBClient, TransactWriteItem } from '@aws-sdk/client-dynamodb'
-import { marshall } from '@aws-sdk/util-dynamodb'
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import { ItemKey } from '../item/item-key'
-import {
-  CreateConditionExpression,
-  createConditionExpression
-} from '../expressions/condition/create-condition-expression'
+import { ConditionExpression, createConditionExpression } from '../expressions/condition/condition-expression'
 import { Expression } from '../expressions/expression'
 
 type DeleteBuilderOptions = {
@@ -13,7 +10,7 @@ type DeleteBuilderOptions = {
   returnOld?: boolean
 }
 
-export class DeleteItemBuilder {
+export class DeleteItemBuilder<Item> {
   private readonly options: DeleteBuilderOptions
 
   constructor(
@@ -24,27 +21,27 @@ export class DeleteItemBuilder {
     this.options = { ...defaults }
   }
 
-  key(key: ItemKey): DeleteItemBuilder {
+  key(key: ItemKey): DeleteItemBuilder<Item> {
     this.options.key = key
     return this
   }
 
-  condition(...conditions: CreateConditionExpression[]): DeleteItemBuilder {
+  condition(...conditions: ConditionExpression[]): DeleteItemBuilder<Item> {
     this.options.condition = createConditionExpression('condition', ...conditions)
     return this
   }
 
-  returnOld(): DeleteItemBuilder {
+  returnOld(): DeleteItemBuilder<Item> {
     this.options.returnOld = true
     return this
   }
 
-  async exec(): Promise<void> {
+  async exec(): Promise<Item | null> {
     const { key, condition, returnOld } = this.options
 
     if (!key) throw new Error('[invalid options] - key is missing')
 
-    await this.client.send(
+    const result = await this.client.send(
       new DeleteItemCommand({
         TableName: this.tableName,
         Key: marshall(key),
@@ -55,6 +52,10 @@ export class DeleteItemBuilder {
         ReturnValuesOnConditionCheckFailure: returnOld ? 'ALL_OLD' : 'NONE'
       })
     )
+
+    if (!result.Attributes) return null
+
+    return unmarshall(result.Attributes) as Item
   }
 
   tx(): TransactWriteItem {

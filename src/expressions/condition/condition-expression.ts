@@ -28,7 +28,7 @@ export type KeyConditionExpression =
   | BeginsWithCondition
   | BetweenCondition
 
-export type CreateConditionExpression =
+export type ConditionExpression =
   | GroupExpression
   | AndCondition
   | OrExpression
@@ -48,11 +48,11 @@ export type CreateConditionExpression =
   | SizeCondition
   | TypeCondition
 
-export const createConditionExpression = (name: string, ...conditions: CreateConditionExpression[]): Expression => {
+export const createConditionExpression = (name: string, ...conditions: ConditionExpression[]): Expression => {
   let expression = ''
   let expressionAttributes = new ExpressionAttributes(name)
 
-  const applyCondition = (condition: CreateConditionExpression) => {
+  const applyCondition = (condition: ConditionExpression) => {
     switch (condition.type) {
       case 'group':
         expression += `(`

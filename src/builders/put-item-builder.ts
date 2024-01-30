@@ -1,46 +1,43 @@
 import { DynamoDBClient, PutItemCommand, TransactWriteItem } from '@aws-sdk/client-dynamodb'
-import { marshall } from '@aws-sdk/util-dynamodb'
-import {
-  createConditionExpression,
-  CreateConditionExpression
-} from '../expressions/condition/create-condition-expression'
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
+import { createConditionExpression, ConditionExpression } from '../expressions/condition/condition-expression'
 import { Expression } from '../expressions/expression'
 
-type PutBuilderOptions = {
-  item?: any
+type PutBuilderOptions<Item> = {
+  item?: Item
   conditionExpression?: Expression
   returnOld?: boolean
 }
 
-export class PutItemBuilder {
-  private options: PutBuilderOptions = {}
+export class PutItemBuilder<Item> {
+  private options: PutBuilderOptions<Item> = {}
 
   constructor(
     private readonly tableName: string,
     private readonly client: DynamoDBClient
   ) {}
 
-  item(item: any): PutItemBuilder {
+  item(item: Item): PutItemBuilder<Item> {
     this.options.item = item
     return this
   }
 
-  condition(...conditions: CreateConditionExpression[]): PutItemBuilder {
+  condition(...conditions: ConditionExpression[]): PutItemBuilder<Item> {
     this.options.conditionExpression = createConditionExpression('condition', ...conditions)
     return this
   }
 
-  returnOld(): PutItemBuilder {
+  returnOld(): PutItemBuilder<Item> {
     this.options.returnOld = true
     return this
   }
 
-  async exec(): Promise<void> {
+  async exec(): Promise<Item | null> {
     const { item, conditionExpression, returnOld } = this.options
 
     if (!item) throw new Error('[invalid options] - item is missing')
 
-    await this.client.send(
+    const result = await this.client.send(
       new PutItemCommand({
         TableName: this.tableName,
         Item: marshall(item),
@@ -50,6 +47,10 @@ export class PutItemBuilder {
         ReturnValues: returnOld === true ? 'ALL_OLD' : 'NONE'
       })
     )
+
+    if (!result.Attributes) return null
+
+    return unmarshall(result.Attributes) as Item
   }
 
   tx(): TransactWriteItem {
