@@ -63,7 +63,7 @@ export class UpdateItemBuilder<Item> {
       })
     )
 
-    if (!result.Attributes) return null
+    if (!result?.Attributes) return null
 
     return unmarshall(result.Attributes) as Item
   }
