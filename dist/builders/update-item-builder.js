@@ -52,7 +52,7 @@ class UpdateItemBuilder {
                 ExpressionAttributeValues: Object.assign(Object.assign({}, updateExpression.expressionAttributeValues), conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expressionAttributeValues),
                 ReturnValues: returnValue
             }));
-            if (!result.Attributes)
+            if (!(result === null || result === void 0 ? void 0 : result.Attributes))
                 return null;
             return (0, util_dynamodb_1.unmarshall)(result.Attributes);
         });

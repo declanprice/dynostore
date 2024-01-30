@@ -46,7 +46,7 @@ class DeleteItemBuilder {
                 ReturnValues: returnOld ? 'ALL_OLD' : 'NONE',
                 ReturnValuesOnConditionCheckFailure: returnOld ? 'ALL_OLD' : 'NONE'
             }));
-            if (!result.Attributes)
+            if (!(result === null || result === void 0 ? void 0 : result.Attributes))
                 return null;
             return (0, util_dynamodb_1.unmarshall)(result.Attributes);
         });

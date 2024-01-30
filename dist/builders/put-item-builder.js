@@ -44,7 +44,7 @@ class PutItemBuilder {
                 ExpressionAttributeValues: conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expressionAttributeValues,
                 ReturnValues: returnOld === true ? 'ALL_OLD' : 'NONE'
             }));
-            if (!result.Attributes)
+            if (!(result === null || result === void 0 ? void 0 : result.Attributes))
                 return null;
             return (0, util_dynamodb_1.unmarshall)(result.Attributes);
         });

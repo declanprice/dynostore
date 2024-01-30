@@ -14,8 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./transaction/transact-write-items"), exports);
-__exportStar(require("./expressions"), exports);
-__exportStar(require("./builders"), exports);
-__exportStar(require("./store"), exports);
-__exportStar(require("./item/item-key"), exports);
+__exportStar(require("./condition"), exports);
+__exportStar(require("./update"), exports);
+__exportStar(require("./expression"), exports);
+__exportStar(require("./expression-attributes"), exports);

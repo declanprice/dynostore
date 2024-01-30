@@ -14,8 +14,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./transaction/transact-write-items"), exports);
-__exportStar(require("./expressions"), exports);
-__exportStar(require("./builders"), exports);
-__exportStar(require("./store"), exports);
-__exportStar(require("./item/item-key"), exports);
+__exportStar(require("./add"), exports);
+__exportStar(require("./decrement"), exports);
+__exportStar(require("./delete"), exports);
+__exportStar(require("./increment"), exports);
+__exportStar(require("./remove"), exports);
+__exportStar(require("./set"), exports);
+__exportStar(require("./setIfNotExists"), exports);
+__exportStar(require("./update-expression"), exports);

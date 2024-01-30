@@ -12,7 +12,7 @@ class Store {
         this.tableName = tableName;
         this.client = client;
     }
-    get(item) {
+    get() {
         return new get_item_builder_1.GetItemBuilder(this.tableName, this.client);
     }
     put() {
