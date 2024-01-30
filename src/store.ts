@@ -36,3 +36,5 @@ export class Store {
     return new ScanItemsBuilder(this.tableName, this.client)
   }
 }
+
+const store = new Store('asd', {} as any)

@@ -11,7 +11,7 @@ export class UpdateItemBuilder {
   private options: UpdateItemBuilderOptions = {}
 
   constructor(
-    readonly tableName: string,
-    readonly client: DynamoDBClient
+    private readonly tableName: string,
+    private readonly client: DynamoDBClient
   ) {}
 }

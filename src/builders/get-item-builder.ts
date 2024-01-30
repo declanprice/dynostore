@@ -12,9 +12,9 @@ export class GetItemBuilder {
   private readonly options: GetBuilderOptions
 
   constructor(
-    readonly tableName: string,
-    readonly client: DynamoDBClient,
-    readonly defaults: GetBuilderOptions = {}
+    private readonly tableName: string,
+    private readonly client: DynamoDBClient,
+    private readonly defaults: GetBuilderOptions = {}
   ) {
     this.options = { ...defaults }
   }

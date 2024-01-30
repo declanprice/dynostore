@@ -2,10 +2,10 @@ import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import {
   CreateConditionExpression,
-  createConditionExpression,
-  Expression
+  createConditionExpression
 } from '../expressions/condition/create-condition-expression'
 import { ItemKey } from '../item/item-key'
+import { Expression } from '../expressions/expression'
 
 type ScanItemsBuilderOptions = {
   indexName?: string

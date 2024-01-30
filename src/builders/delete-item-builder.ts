@@ -1,18 +1,11 @@
-import {
-  DeleteItemCommand,
-  DynamoDBClient,
-  GetItemCommand,
-  ReturnValuesOnConditionCheckFailure,
-  TransactGetItem,
-  TransactWriteItem
-} from '@aws-sdk/client-dynamodb'
-import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
+import { DeleteItemCommand, DynamoDBClient, TransactWriteItem } from '@aws-sdk/client-dynamodb'
+import { marshall } from '@aws-sdk/util-dynamodb'
 import { ItemKey } from '../item/item-key'
 import {
   CreateConditionExpression,
-  createConditionExpression,
-  Expression
+  createConditionExpression
 } from '../expressions/condition/create-condition-expression'
+import { Expression } from '../expressions/expression'
 
 type DeleteBuilderOptions = {
   key?: ItemKey
@@ -24,9 +17,9 @@ export class DeleteItemBuilder {
   private readonly options: DeleteBuilderOptions
 
   constructor(
-    readonly tableName: string,
-    readonly client: DynamoDBClient,
-    readonly defaults: DeleteBuilderOptions = {}
+    private readonly tableName: string,
+    private readonly client: DynamoDBClient,
+    private readonly defaults: DeleteBuilderOptions = {}
   ) {
     this.options = { ...defaults }
   }

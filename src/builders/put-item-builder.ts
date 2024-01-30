@@ -1,15 +1,14 @@
-import { AttributeValue, DynamoDBClient, PutItemCommand, TransactWriteItem } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, PutItemCommand, TransactWriteItem } from '@aws-sdk/client-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
 import {
-  CreateConditionExpression,
-  createConditionExpression
+  createConditionExpression,
+  CreateConditionExpression
 } from '../expressions/condition/create-condition-expression'
+import { Expression } from '../expressions/expression'
 
 type PutBuilderOptions = {
   item?: any
-  conditionExpression?: string
-  expressionAttributeNames?: { [key: string]: string }
-  expressionAttributeValues?: { [key: string]: AttributeValue }
+  conditionExpression?: Expression
   returnOld?: boolean
 }
 
@@ -17,8 +16,8 @@ export class PutItemBuilder {
   private options: PutBuilderOptions = {}
 
   constructor(
-    readonly tableName: string,
-    readonly client: DynamoDBClient
+    private readonly tableName: string,
+    private readonly client: DynamoDBClient
   ) {}
 
   item(item: any): PutItemBuilder {
@@ -27,13 +26,7 @@ export class PutItemBuilder {
   }
 
   condition(...conditions: CreateConditionExpression[]): PutItemBuilder {
-    const { expression, expressionAttributeNames, expressionAttributeValues } = createConditionExpression(
-      'condition',
-      ...conditions
-    )
-    this.options.conditionExpression = expression
-    this.options.expressionAttributeNames = expressionAttributeNames
-    this.options.expressionAttributeValues = expressionAttributeValues
+    this.options.conditionExpression = createConditionExpression('condition', ...conditions)
     return this
   }
 
@@ -43,7 +36,7 @@ export class PutItemBuilder {
   }
 
   async exec(): Promise<void> {
-    const { item, conditionExpression, expressionAttributeNames, expressionAttributeValues, returnOld } = this.options
+    const { item, conditionExpression, returnOld } = this.options
 
     if (!item) throw new Error('[invalid options] - item is missing')
 
@@ -51,16 +44,16 @@ export class PutItemBuilder {
       new PutItemCommand({
         TableName: this.tableName,
         Item: marshall(item),
-        ConditionExpression: conditionExpression,
-        ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeValues,
+        ConditionExpression: conditionExpression?.expression,
+        ExpressionAttributeNames: conditionExpression?.expressionAttributeNames,
+        ExpressionAttributeValues: conditionExpression?.expressionAttributeValues,
         ReturnValues: returnOld === true ? 'ALL_OLD' : 'NONE'
       })
     )
   }
 
   tx(): TransactWriteItem {
-    const { item, conditionExpression, expressionAttributeNames, expressionAttributeValues, returnOld } = this.options
+    const { item, conditionExpression, returnOld } = this.options
 
     if (!item) throw new Error('[invalid options] - item is missing')
 
@@ -68,9 +61,9 @@ export class PutItemBuilder {
       Put: {
         TableName: this.tableName,
         Item: marshall(item),
-        ConditionExpression: conditionExpression,
-        ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeValues,
+        ConditionExpression: conditionExpression?.expression,
+        ExpressionAttributeNames: conditionExpression?.expressionAttributeNames,
+        ExpressionAttributeValues: conditionExpression?.expressionAttributeValues,
         ReturnValuesOnConditionCheckFailure: returnOld === true ? 'ALL_OLD' : 'NONE'
       }
     }

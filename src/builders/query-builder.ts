@@ -3,10 +3,10 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import {
   CreateConditionExpression,
   createConditionExpression,
-  Expression,
   KeyConditionExpression
 } from '../expressions/condition/create-condition-expression'
 import { ItemKey } from '../item/item-key'
+import { Expression } from '../expressions/expression'
 
 type QueryBuilderOptions = {
   indexName?: string
@@ -29,8 +29,8 @@ export class QueryItemsBuilder {
   private options: QueryBuilderOptions = {}
 
   constructor(
-    readonly tableName: string,
-    readonly client: DynamoDBClient
+    private readonly tableName: string,
+    private readonly client: DynamoDBClient
   ) {}
 
   pk(path: string, value: string | number) {
