@@ -51,6 +51,11 @@ export class QueryItemsBuilder<Item> {
     return this
   }
 
+  using(indexName: string): QueryItemsBuilder<Item> {
+    this.options.indexName = indexName
+    return this
+  }
+
   filter(...conditions: ConditionExpression[]): QueryItemsBuilder<Item> {
     this.options.filter = createConditionExpression(this.attributes, ...conditions)
     return this
