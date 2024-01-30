@@ -1,6 +1,9 @@
 import { AttributeValue, DynamoDBClient, PutItemCommand, TransactWriteItem } from '@aws-sdk/client-dynamodb'
 import { marshall } from '@aws-sdk/util-dynamodb'
-import { ConvertConditionExpression, convertToExpression } from '../expressions/condition/convert-condition-expression'
+import {
+  CreateConditionExpression,
+  createConditionExpression
+} from '../expressions/condition/create-condition-expression'
 
 type PutBuilderOptions = {
   item?: any
@@ -23,8 +26,8 @@ export class PutItemBuilder {
     return this
   }
 
-  condition(...conditions: ConvertConditionExpression[]): PutItemBuilder {
-    const { expression, expressionAttributeNames, expressionAttributeValues } = convertToExpression(
+  condition(...conditions: CreateConditionExpression[]): PutItemBuilder {
+    const { expression, expressionAttributeNames, expressionAttributeValues } = createConditionExpression(
       'condition',
       ...conditions
     )
@@ -34,7 +37,7 @@ export class PutItemBuilder {
     return this
   }
 
-  returnOldValues(): PutItemBuilder {
+  returnOld(): PutItemBuilder {
     this.options.returnOld = true
     return this
   }

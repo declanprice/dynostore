@@ -1,9 +1,7 @@
 import { EqCondition } from './eq'
 import { GroupExpression } from './group'
-import { AttributeValue } from '@aws-sdk/client-dynamodb'
 import { AndCondition } from './and'
 import { OrExpression } from './or'
-import { convertToAttr } from '@aws-sdk/util-dynamodb'
 import { NotCondition } from './not'
 import { GteCondition } from './gte'
 import { GtCondition } from './gt'
@@ -19,6 +17,7 @@ import { AnyOfCondition } from './anyOf'
 import { SizeCondition } from './size'
 import { TypeCondition } from './type'
 import { ExpressionAttributes } from '../expression-attributes'
+import { Expression } from '../expression'
 
 export type KeyConditionExpression =
   | EqCondition
@@ -29,7 +28,7 @@ export type KeyConditionExpression =
   | BeginsWithCondition
   | BetweenCondition
 
-export type ConvertConditionExpression =
+export type CreateConditionExpression =
   | GroupExpression
   | AndCondition
   | OrExpression
@@ -49,17 +48,11 @@ export type ConvertConditionExpression =
   | SizeCondition
   | TypeCondition
 
-export type Expression = {
-  expression: string
-  expressionAttributeNames: { [key: string]: string }
-  expressionAttributeValues: { [key: string]: AttributeValue }
-}
-
-export const convertToExpression = (name: string, ...conditions: ConvertConditionExpression[]): Expression => {
+export const createConditionExpression = (name: string, ...conditions: CreateConditionExpression[]): Expression => {
   let expression = ''
   let expressionAttributes = new ExpressionAttributes(name)
 
-  const applyCondition = (condition: ConvertConditionExpression) => {
+  const applyCondition = (condition: CreateConditionExpression) => {
     switch (condition.type) {
       case 'group':
         expression += `(`

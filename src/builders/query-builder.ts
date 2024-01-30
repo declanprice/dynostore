@@ -1,11 +1,11 @@
 import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import {
-  ConvertConditionExpression,
-  convertToExpression,
+  CreateConditionExpression,
+  createConditionExpression,
   Expression,
   KeyConditionExpression
-} from '../expressions/condition/convert-condition-expression'
+} from '../expressions/condition/create-condition-expression'
 import { ItemKey } from '../item/item-key'
 
 type QueryBuilderOptions = {
@@ -42,12 +42,12 @@ export class QueryItemsBuilder {
   sk(path: string, condition: KeyConditionExpression) {
     this.options.sk = {
       path,
-      condition: convertToExpression('key', condition)
+      condition: createConditionExpression('key', condition)
     }
   }
 
-  filter(...conditions: ConvertConditionExpression[]): QueryItemsBuilder {
-    this.options.filter = convertToExpression('filter', ...conditions)
+  filter(...conditions: CreateConditionExpression[]): QueryItemsBuilder {
+    this.options.filter = createConditionExpression('filter', ...conditions)
     return this
   }
 

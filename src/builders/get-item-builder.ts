@@ -24,8 +24,8 @@ export class GetItemBuilder {
     return this
   }
 
-  consistent(consistent?: boolean): GetItemBuilder {
-    this.options.consistent = consistent
+  consistent(): GetItemBuilder {
+    this.options.consistent = true
     return this
   }
 
