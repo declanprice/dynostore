@@ -30,7 +30,7 @@ describe('UpdateExpression', () => {
 
   it('setIfNotExists() - should return expected expression', () => {
     const expression = createUpdateExpression(attributes, setIfNotExists('name', 'declan'))
-    expect(expression.expression).toEqual('SET #0 if_not_exists(#0, :1)')
+    expect(expression.expression).toEqual('SET #0 = if_not_exists(#0, :1)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
     })
@@ -43,7 +43,7 @@ describe('UpdateExpression', () => {
 
   it('decrement() - should return expected expression', () => {
     const expression = createUpdateExpression(attributes, decrement('name', 'declan'))
-    expect(expression.expression).toEqual('SET #0 - :1')
+    expect(expression.expression).toEqual('SET #0 = #0 - :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
     })
@@ -56,7 +56,7 @@ describe('UpdateExpression', () => {
 
   it('increment() - should return expected expression', () => {
     const expression = createUpdateExpression(attributes, increment('name', 'declan'))
-    expect(expression.expression).toEqual('SET #0 + :1')
+    expect(expression.expression).toEqual('SET #0 = #0 + :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
     })
@@ -103,17 +103,26 @@ describe('UpdateExpression', () => {
   })
 
   it('should join multiple update conditions', () => {
-    const expression = createUpdateExpression(attributes, set('age', 25), del('name', 'declan'))
-    expect(expression.expression).toEqual('SET #0 = :1 DELETE #2 :3')
+    const expression = createUpdateExpression(
+      attributes,
+      set('age', 25),
+      set('hobby', 'running'),
+      del('name', 'declan')
+    )
+    expect(expression.expression).toEqual('SET #0 = :1,#2 = :3 DELETE #4 :5')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'age',
-      '#2': 'name'
+      '#2': 'hobby',
+      '#4': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
       ':1': {
         N: '25'
       },
       ':3': {
+        S: 'running'
+      },
+      ':5': {
         S: 'declan'
       }
     })

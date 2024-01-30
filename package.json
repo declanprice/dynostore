@@ -1,12 +1,13 @@
 {
   "name": "@declanprice/dynostore",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "lightweight query builder for dynamodb using AWS SDK V3",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "jest"
+    "test": "jest",
+    "test:integration": "jest --config jest-integration.config.js --runInBand"
   },
   "author": "",
   "license": "ISC",
