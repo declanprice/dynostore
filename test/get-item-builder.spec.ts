@@ -36,7 +36,7 @@ describe('GetItemBuilder', () => {
   it('should send GetItemCommand with configured options', async () => {
     const builder = new GetItemBuilder(testTableName, testClient)
 
-    const item = await builder.key({ id: validTestId }).consistent(true).exec()
+    const item = await builder.key({ id: validTestId }).consistent().exec()
 
     expect(testClient).toHaveReceivedCommandWith(GetItemCommand, {
       TableName: testTableName,
@@ -54,7 +54,7 @@ describe('GetItemBuilder', () => {
   it('should return null if Item is undefined', async () => {
     const builder = new GetItemBuilder(testTableName, testClient)
 
-    const item = await builder.key({ id: invalidTestId }).consistent(true).exec()
+    const item = await builder.key({ id: invalidTestId }).consistent().exec()
 
     expect(item).toEqual(null)
   })

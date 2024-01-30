@@ -5,6 +5,7 @@ import { QueryItemsBuilder } from './builders/query-builder'
 import { DeleteItemBuilder } from './builders/delete-item-builder'
 import { UpdateItemBuilder } from './builders/update-item-builder'
 import { ScanItemsBuilder } from './builders/scan-items-builder'
+import { ItemKey } from './item/item-key'
 
 export class Store {
   constructor(

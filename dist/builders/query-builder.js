@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryItemsBuilder = void 0;
 const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 const util_dynamodb_1 = require("@aws-sdk/util-dynamodb");
-const convert_condition_expression_1 = require("../expressions/condition/convert-condition-expression");
+const condition_expression_1 = require("../expressions/condition/condition-expression");
 class QueryItemsBuilder {
     constructor(tableName, client) {
         this.tableName = tableName;
@@ -28,11 +28,11 @@ class QueryItemsBuilder {
     sk(path, condition) {
         this.options.sk = {
             path,
-            condition: (0, convert_condition_expression_1.convertToExpression)('key', condition)
+            condition: (0, condition_expression_1.createConditionExpression)('key', condition)
         };
     }
     filter(...conditions) {
-        this.options.filter = (0, convert_condition_expression_1.convertToExpression)('filter', ...conditions);
+        this.options.filter = (0, condition_expression_1.createConditionExpression)('filter', ...conditions);
         return this;
     }
     project(projection) {

@@ -261,4 +261,37 @@ describe('ConditionExpression', () => {
       }
     })
   })
+
+  it('should return expected expression with complex conditions', () => {
+    const expression = createConditionExpression(
+      'test',
+      group(eq('name', 'declan'), or(), eq('age', 26)),
+      or(),
+      group(lt('age', 25), and(), gt('age', 15))
+    )
+
+    expect(expression.expression).toEqual(
+      '(#test-0 = :test-1 or #test-2 = :test-3) or (#test-4 < :test-5 and #test-6 > :test-7)'
+    )
+    expect(expression.expressionAttributeNames).toEqual({
+      '#test-0': 'name',
+      '#test-2': 'age',
+      '#test-4': 'age',
+      '#test-6': 'age'
+    })
+    expect(expression.expressionAttributeValues).toEqual({
+      ':test-1': {
+        S: 'declan'
+      },
+      ':test-3': {
+        N: '26'
+      },
+      ':test-5': {
+        N: '25'
+      },
+      ':test-7': {
+        N: '15'
+      }
+    })
+  })
 })

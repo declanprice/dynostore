@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PutItemBuilder = void 0;
 const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 const util_dynamodb_1 = require("@aws-sdk/util-dynamodb");
-const convert_condition_expression_1 = require("../expressions/condition/convert-condition-expression");
+const condition_expression_1 = require("../expressions/condition/condition-expression");
 class PutItemBuilder {
     constructor(tableName, client) {
         this.tableName = tableName;
@@ -24,42 +24,42 @@ class PutItemBuilder {
         return this;
     }
     condition(...conditions) {
-        const { expression, expressionAttributeNames, expressionAttributeValues } = (0, convert_condition_expression_1.convertToExpression)('condition', ...conditions);
-        this.options.conditionExpression = expression;
-        this.options.expressionAttributeNames = expressionAttributeNames;
-        this.options.expressionAttributeValues = expressionAttributeValues;
+        this.options.conditionExpression = (0, condition_expression_1.createConditionExpression)('condition', ...conditions);
         return this;
     }
-    returnOldValues() {
+    returnOld() {
         this.options.returnOld = true;
         return this;
     }
     exec() {
         return __awaiter(this, void 0, void 0, function* () {
-            const { item, conditionExpression, expressionAttributeNames, expressionAttributeValues, returnOld } = this.options;
+            const { item, conditionExpression, returnOld } = this.options;
             if (!item)
                 throw new Error('[invalid options] - item is missing');
-            yield this.client.send(new client_dynamodb_1.PutItemCommand({
+            const result = yield this.client.send(new client_dynamodb_1.PutItemCommand({
                 TableName: this.tableName,
                 Item: (0, util_dynamodb_1.marshall)(item),
-                ConditionExpression: conditionExpression,
-                ExpressionAttributeNames: expressionAttributeNames,
-                ExpressionAttributeValues: expressionAttributeValues,
+                ConditionExpression: conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expression,
+                ExpressionAttributeNames: conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expressionAttributeNames,
+                ExpressionAttributeValues: conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expressionAttributeValues,
                 ReturnValues: returnOld === true ? 'ALL_OLD' : 'NONE'
             }));
+            if (!result.Attributes)
+                return null;
+            return (0, util_dynamodb_1.unmarshall)(result.Attributes);
         });
     }
     tx() {
-        const { item, conditionExpression, expressionAttributeNames, expressionAttributeValues, returnOld } = this.options;
+        const { item, conditionExpression, returnOld } = this.options;
         if (!item)
             throw new Error('[invalid options] - item is missing');
         return {
             Put: {
                 TableName: this.tableName,
                 Item: (0, util_dynamodb_1.marshall)(item),
-                ConditionExpression: conditionExpression,
-                ExpressionAttributeNames: expressionAttributeNames,
-                ExpressionAttributeValues: expressionAttributeValues,
+                ConditionExpression: conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expression,
+                ExpressionAttributeNames: conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expressionAttributeNames,
+                ExpressionAttributeValues: conditionExpression === null || conditionExpression === void 0 ? void 0 : conditionExpression.expressionAttributeValues,
                 ReturnValuesOnConditionCheckFailure: returnOld === true ? 'ALL_OLD' : 'NONE'
             }
         };

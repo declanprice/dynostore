@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetItemBuilder = void 0;
+exports.DeleteItemBuilder = void 0;
 const client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 const util_dynamodb_1 = require("@aws-sdk/util-dynamodb");
-class GetItemBuilder {
+const condition_expression_1 = require("../expressions/condition/condition-expression");
+class DeleteItemBuilder {
     constructor(tableName, client, defaults = {}) {
         this.tableName = tableName;
         this.client = client;
@@ -23,41 +24,47 @@ class GetItemBuilder {
         this.options.key = key;
         return this;
     }
-    consistent() {
-        this.options.consistent = true;
+    condition(...conditions) {
+        this.options.condition = (0, condition_expression_1.createConditionExpression)('condition', ...conditions);
         return this;
     }
-    project(projection) {
-        this.options.projection = projection;
+    returnOld() {
+        this.options.returnOld = true;
         return this;
     }
     exec() {
         return __awaiter(this, void 0, void 0, function* () {
-            const { key, consistent, projection } = this.options;
+            const { key, condition, returnOld } = this.options;
             if (!key)
                 throw new Error('[invalid options] - key is missing');
-            const response = yield this.client.send(new client_dynamodb_1.GetItemCommand({
+            const result = yield this.client.send(new client_dynamodb_1.DeleteItemCommand({
                 TableName: this.tableName,
                 Key: (0, util_dynamodb_1.marshall)(key),
-                ConsistentRead: consistent,
-                ProjectionExpression: projection
+                ConditionExpression: condition === null || condition === void 0 ? void 0 : condition.expression,
+                ExpressionAttributeNames: condition === null || condition === void 0 ? void 0 : condition.expressionAttributeNames,
+                ExpressionAttributeValues: condition === null || condition === void 0 ? void 0 : condition.expressionAttributeValues,
+                ReturnValues: returnOld ? 'ALL_OLD' : 'NONE',
+                ReturnValuesOnConditionCheckFailure: returnOld ? 'ALL_OLD' : 'NONE'
             }));
-            if (!response.Item)
+            if (!result.Attributes)
                 return null;
-            return (0, util_dynamodb_1.unmarshall)(response.Item);
+            return (0, util_dynamodb_1.unmarshall)(result.Attributes);
         });
     }
     tx() {
-        const { key, projection } = this.options;
+        const { key, condition, returnOld } = this.options;
         if (!key)
             throw new Error('[invalid options] - key is missing');
         return {
-            Get: {
+            Delete: {
                 TableName: this.tableName,
                 Key: (0, util_dynamodb_1.marshall)(key),
-                ProjectionExpression: projection
+                ConditionExpression: condition === null || condition === void 0 ? void 0 : condition.expression,
+                ExpressionAttributeNames: condition === null || condition === void 0 ? void 0 : condition.expressionAttributeNames,
+                ExpressionAttributeValues: condition === null || condition === void 0 ? void 0 : condition.expressionAttributeValues,
+                ReturnValuesOnConditionCheckFailure: returnOld ? 'ALL_OLD' : 'NONE'
             }
         };
     }
 }
-exports.GetItemBuilder = GetItemBuilder;
+exports.DeleteItemBuilder = DeleteItemBuilder;

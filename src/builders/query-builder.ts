@@ -8,7 +8,7 @@ import {
 import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
 
-type QueryBuilderOptions<Item> = {
+type QueryBuilderOptions = {
   indexName?: string
   pk?: {
     path: string
@@ -26,7 +26,7 @@ type QueryBuilderOptions<Item> = {
 }
 
 export class QueryItemsBuilder<Item> {
-  private options: QueryBuilderOptions<Item> = {}
+  private options: QueryBuilderOptions = {}
 
   constructor(
     private readonly tableName: string,
