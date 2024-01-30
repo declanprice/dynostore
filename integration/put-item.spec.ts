@@ -1,8 +1,7 @@
-import { DeleteItemCommand, DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { Store } from '../src/store'
-import { marshall } from '@aws-sdk/util-dynamodb'
 import { wait } from './wait'
-import { DeleteItemBuilder } from '../src/builders/delete-item-builder'
+import { notExists } from '../src/expressions/condition/notExists'
 
 const client = new DynamoDBClient()
 
@@ -25,7 +24,6 @@ describe('PutItem', () => {
 
   beforeEach(async () => {
     await store.delete().key({ pk: customer.pk, sk: customer.sk }).exec()
-
     await wait(100)
   })
 
@@ -43,10 +41,16 @@ describe('PutItem', () => {
 
   it('should put item successfully and return old values', async () => {
     await store.put<CustomerItem>().item(customer).exec()
-    await wait(100)
     const item = await store.put<CustomerItem>().item(customer).returnOld().exec()
     if (!item) throw new Error('item is null')
     expect(item).toBeTruthy()
     expect(item.pk).toEqual(customer.pk)
+  })
+
+  it('should fail put condition', async () => {
+    await store.put<CustomerItem>().item(customer).exec()
+    await expect(async () => {
+      await store.put<CustomerItem>().item(customer).condition(notExists('pk')).exec()
+    }).rejects.toBeTruthy()
   })
 })
