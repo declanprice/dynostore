@@ -1,4 +1,4 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { ConditionalCheckFailedException, DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { Store } from '../src/store'
 import { wait } from './wait'
 import { notExists } from '../src/expressions/condition/notExists'
@@ -51,6 +51,6 @@ describe('PutItem', () => {
     await store.put<CustomerItem>().item(customer).exec()
     await expect(async () => {
       await store.put<CustomerItem>().item(customer).condition(notExists('pk')).exec()
-    }).rejects.toBeTruthy()
+    }).rejects.toThrow(ConditionalCheckFailedException)
   })
 })

@@ -45,20 +45,32 @@ export class UpdateItemBuilder<Item> {
     if (!key) throw new Error('[invalid options] - key is required')
     if (!updateExpression) throw new Error('[invalid options] - update expression is required')
 
+    const hasExpressionName =
+      updateExpression?.expressionAttributeNames !== undefined ||
+      conditionExpression?.expressionAttributeValues !== undefined
+
+    const hasExpressionValues =
+      updateExpression?.expressionAttributeValues !== undefined ||
+      conditionExpression?.expressionAttributeValues !== undefined
+
     const result = await this.client.send(
       new UpdateItemCommand({
         TableName: this.tableName,
         Key: marshall(key),
         UpdateExpression: updateExpression.expression,
         ConditionExpression: conditionExpression?.expression,
-        ExpressionAttributeNames: {
-          ...updateExpression.expressionAttributeNames,
-          ...conditionExpression?.expressionAttributeNames
-        },
-        ExpressionAttributeValues: {
-          ...updateExpression.expressionAttributeValues,
-          ...conditionExpression?.expressionAttributeValues
-        },
+        ExpressionAttributeNames: hasExpressionName
+          ? {
+              ...updateExpression.expressionAttributeNames,
+              ...conditionExpression?.expressionAttributeNames
+            }
+          : undefined,
+        ExpressionAttributeValues: hasExpressionValues
+          ? {
+              ...updateExpression.expressionAttributeValues,
+              ...conditionExpression?.expressionAttributeValues
+            }
+          : undefined,
         ReturnValues: returnValue
       })
     )
@@ -73,20 +85,32 @@ export class UpdateItemBuilder<Item> {
     if (!key) throw new Error('[invalid options] - key is required')
     if (!updateExpression) throw new Error('[invalid options] - update expression is required')
 
+    const hasExpressionName =
+      updateExpression?.expressionAttributeNames !== undefined ||
+      conditionExpression?.expressionAttributeValues !== undefined
+
+    const hasExpressionValues =
+      updateExpression?.expressionAttributeValues !== undefined ||
+      conditionExpression?.expressionAttributeValues !== undefined
+
     return {
       Update: {
         TableName: this.tableName,
         Key: marshall(key),
         UpdateExpression: updateExpression.expression,
         ConditionExpression: conditionExpression?.expression,
-        ExpressionAttributeNames: {
-          ...updateExpression.expressionAttributeNames,
-          ...conditionExpression?.expressionAttributeNames
-        },
-        ExpressionAttributeValues: {
-          ...updateExpression.expressionAttributeValues,
-          ...conditionExpression?.expressionAttributeValues
-        },
+        ExpressionAttributeNames: hasExpressionName
+          ? {
+              ...updateExpression.expressionAttributeNames,
+              ...conditionExpression?.expressionAttributeNames
+            }
+          : undefined,
+        ExpressionAttributeValues: hasExpressionValues
+          ? {
+              ...updateExpression.expressionAttributeValues,
+              ...conditionExpression?.expressionAttributeValues
+            }
+          : undefined,
         ReturnValuesOnConditionCheckFailure: returnValue === 'ALL_OLD' ? 'ALL_OLD' : undefined
       }
     }

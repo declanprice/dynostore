@@ -29,12 +29,12 @@ import { add } from '../src/expressions/update/add'
 describe('UpdateExpression', () => {
   it('set() - should return expected expression', () => {
     const expression = createUpdateExpression('test', set('name', 'declan'))
-    expect(expression.expression).toEqual('SET #test-0 = :test-1')
+    expect(expression.expression).toEqual('SET #test_0 = :test_1')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'name'
+      '#test_0': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
-      ':test-1': {
+      ':test_1': {
         S: 'declan'
       }
     })
@@ -42,12 +42,12 @@ describe('UpdateExpression', () => {
 
   it('setIfNotExists() - should return expected expression', () => {
     const expression = createUpdateExpression('test', setIfNotExists('name', 'declan'))
-    expect(expression.expression).toEqual('SET #test-0 if_not_exists(#test-0, :test-1)')
+    expect(expression.expression).toEqual('SET #test_0 if_not_exists(#test_0, :test_1)')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'name'
+      '#test_0': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
-      ':test-1': {
+      ':test_1': {
         S: 'declan'
       }
     })
@@ -55,12 +55,12 @@ describe('UpdateExpression', () => {
 
   it('decrement() - should return expected expression', () => {
     const expression = createUpdateExpression('test', decrement('name', 'declan'))
-    expect(expression.expression).toEqual('SET #test-0 - :test-1')
+    expect(expression.expression).toEqual('SET #test_0 - :test_1')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'name'
+      '#test_0': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
-      ':test-1': {
+      ':test_1': {
         S: 'declan'
       }
     })
@@ -68,12 +68,12 @@ describe('UpdateExpression', () => {
 
   it('increment() - should return expected expression', () => {
     const expression = createUpdateExpression('test', increment('name', 'declan'))
-    expect(expression.expression).toEqual('SET #test-0 + :test-1')
+    expect(expression.expression).toEqual('SET #test_0 + :test_1')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'name'
+      '#test_0': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
-      ':test-1': {
+      ':test_1': {
         S: 'declan'
       }
     })
@@ -81,21 +81,21 @@ describe('UpdateExpression', () => {
 
   it('remove() - should return expected expression', () => {
     const expression = createUpdateExpression('test', remove('name'))
-    expect(expression.expression).toEqual('REMOVE #test-0')
+    expect(expression.expression).toEqual('REMOVE #test_0')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'name'
+      '#test_0': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({})
   })
 
   it('add() - should return expected expression', () => {
     const expression = createUpdateExpression('test', add('name', 'declan'))
-    expect(expression.expression).toEqual('ADD #test-0 :test-1')
+    expect(expression.expression).toEqual('ADD #test_0 :test_1')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'name'
+      '#test_0': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
-      ':test-1': {
+      ':test_1': {
         S: 'declan'
       }
     })
@@ -103,12 +103,12 @@ describe('UpdateExpression', () => {
 
   it('delete() - should return expected expression', () => {
     const expression = createUpdateExpression('test', del('name', 'declan'))
-    expect(expression.expression).toEqual('DELETE #test-0 :test-1')
+    expect(expression.expression).toEqual('DELETE #test_0 :test_1')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'name'
+      '#test_0': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
-      ':test-1': {
+      ':test_1': {
         S: 'declan'
       }
     })
@@ -116,16 +116,16 @@ describe('UpdateExpression', () => {
 
   it('should join multiple update conditions', () => {
     const expression = createUpdateExpression('test', set('age', 25), del('name', 'declan'))
-    expect(expression.expression).toEqual('SET #test-0 = :test-1,DELETE #test-2 :test-3')
+    expect(expression.expression).toEqual('SET #test_0 = :test_1,DELETE #test_2 :test_3')
     expect(expression.expressionAttributeNames).toEqual({
-      '#test-0': 'age',
-      '#test-2': 'name'
+      '#test_0': 'age',
+      '#test_2': 'name'
     })
     expect(expression.expressionAttributeValues).toEqual({
-      ':test-1': {
+      ':test_1': {
         N: '25'
       },
-      ':test-3': {
+      ':test_3': {
         S: 'declan'
       }
     })

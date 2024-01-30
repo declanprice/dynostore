@@ -76,6 +76,12 @@ export class QueryItemsBuilder<Item> {
 
     if (!pk) throw new Error('[invalid options] - pk is missing')
 
+    const hasExpressionName =
+      sk?.condition.expressionAttributeNames !== undefined || filter?.expressionAttributeValues !== undefined
+
+    const hasExpressionValues =
+      sk?.condition.expressionAttributeValues !== undefined || filter?.expressionAttributeValues !== undefined
+
     const response = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
@@ -83,8 +89,12 @@ export class QueryItemsBuilder<Item> {
         ProjectionExpression: projection,
         KeyConditionExpression: sk?.condition.expression,
         FilterExpression: filter?.expression,
-        ExpressionAttributeNames: { ...sk?.condition.expressionAttributeNames, ...filter?.expressionAttributeNames },
-        ExpressionAttributeValues: { ...sk?.condition.expressionAttributeValues, ...filter?.expressionAttributeValues },
+        ExpressionAttributeNames: hasExpressionName
+          ? { ...sk?.condition.expressionAttributeNames, ...filter?.expressionAttributeNames }
+          : undefined,
+        ExpressionAttributeValues: hasExpressionValues
+          ? { ...sk?.condition.expressionAttributeValues, ...filter?.expressionAttributeValues }
+          : undefined,
         Limit: limit,
         ExclusiveStartKey: marshall(startAt),
         ScanIndexForward: sort !== 'desc'
