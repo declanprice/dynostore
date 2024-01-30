@@ -6,10 +6,10 @@ export class ExpressionAttributes {
   expressionAttributeValues: { [key: string]: AttributeValue } | undefined = undefined
   private expressionCounter = 0
 
-  constructor(readonly expressionName: string) {}
+  constructor() {}
 
   addName(name: string): string {
-    const exName = `#${this.expressionName}_${this.expressionCounter}`
+    const exName = `#${this.expressionCounter}`
     if (!this.expressionAttributeNames) {
       this.expressionAttributeNames = {}
     }
@@ -19,7 +19,7 @@ export class ExpressionAttributes {
   }
 
   addValue(value: any): string {
-    const exValue = `:${this.expressionName}_${this.expressionCounter}`
+    const exValue = `:${this.expressionCounter}`
     if (!this.expressionAttributeValues) {
       this.expressionAttributeValues = {}
     }

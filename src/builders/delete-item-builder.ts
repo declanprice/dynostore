@@ -3,6 +3,7 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import { ItemKey } from '../item/item-key'
 import { ConditionExpression, createConditionExpression } from '../expressions/condition/condition-expression'
 import { Expression } from '../expressions/expression'
+import { ExpressionAttributes } from '../expressions'
 
 type DeleteBuilderOptions = {
   key?: ItemKey
@@ -12,7 +13,7 @@ type DeleteBuilderOptions = {
 
 export class DeleteItemBuilder<Item> {
   private readonly options: DeleteBuilderOptions
-
+  private readonly attributes = new ExpressionAttributes()
   constructor(
     private readonly tableName: string,
     private readonly client: DynamoDBClient,
@@ -27,7 +28,7 @@ export class DeleteItemBuilder<Item> {
   }
 
   condition(...conditions: ConditionExpression[]): DeleteItemBuilder<Item> {
-    this.options.condition = createConditionExpression('condition', ...conditions)
+    this.options.condition = createConditionExpression(this.attributes, ...conditions)
     return this
   }
 
@@ -46,8 +47,8 @@ export class DeleteItemBuilder<Item> {
         TableName: this.tableName,
         Key: marshall(key),
         ConditionExpression: condition?.expression,
-        ExpressionAttributeNames: condition?.expressionAttributeNames,
-        ExpressionAttributeValues: condition?.expressionAttributeValues,
+        ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         ReturnValues: returnOld ? 'ALL_OLD' : 'NONE',
         ReturnValuesOnConditionCheckFailure: returnOld ? 'ALL_OLD' : 'NONE'
       })
@@ -68,8 +69,8 @@ export class DeleteItemBuilder<Item> {
         TableName: this.tableName,
         Key: marshall(key),
         ConditionExpression: condition?.expression,
-        ExpressionAttributeNames: condition?.expressionAttributeNames,
-        ExpressionAttributeValues: condition?.expressionAttributeValues,
+        ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         ReturnValuesOnConditionCheckFailure: returnOld ? 'ALL_OLD' : 'NONE'
       }
     }

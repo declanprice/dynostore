@@ -48,9 +48,11 @@ export type ConditionExpression =
   | SizeCondition
   | TypeCondition
 
-export const createConditionExpression = (name: string, ...conditions: ConditionExpression[]): Expression => {
+export const createConditionExpression = (
+  attributes: ExpressionAttributes,
+  ...conditions: ConditionExpression[]
+): Expression => {
   let expression = ''
-  let expressionAttributes = new ExpressionAttributes(name)
 
   const applyCondition = (condition: ConditionExpression) => {
     switch (condition.type) {
@@ -72,65 +74,65 @@ export const createConditionExpression = (name: string, ...conditions: Condition
         applyCondition(condition.condition)
         break
       case 'eq':
-        const eqName = expressionAttributes.addName(condition.path)
-        const eqValue = expressionAttributes.addValue(condition.value)
+        const eqName = attributes.addName(condition.path)
+        const eqValue = attributes.addValue(condition.value)
         expression += `${eqName} = ${eqValue}`
         break
       case 'notEq':
-        const notEqName = expressionAttributes.addName(condition.path)
-        const notEqValue = expressionAttributes.addValue(condition.value)
+        const notEqName = attributes.addName(condition.path)
+        const notEqValue = attributes.addValue(condition.value)
         expression += `${notEqName} <> ${notEqValue}`
         break
       case 'gt':
-        const gtName = expressionAttributes.addName(condition.path)
-        const gtValue = expressionAttributes.addValue(condition.value)
+        const gtName = attributes.addName(condition.path)
+        const gtValue = attributes.addValue(condition.value)
         expression += `${gtName} > ${gtValue}`
         break
       case 'gte':
-        const gteName = expressionAttributes.addName(condition.path)
-        const gteValue = expressionAttributes.addValue(condition.value)
+        const gteName = attributes.addName(condition.path)
+        const gteValue = attributes.addValue(condition.value)
         expression += `${gteName} >= ${gteValue}`
         break
       case 'lt':
-        const ltName = expressionAttributes.addName(condition.path)
-        const ltValue = expressionAttributes.addValue(condition.value)
+        const ltName = attributes.addName(condition.path)
+        const ltValue = attributes.addValue(condition.value)
         expression += `${ltName} < ${ltValue}`
         break
       case 'lte':
-        const lteName = expressionAttributes.addName(condition.path)
-        const lteValue = expressionAttributes.addValue(condition.value)
+        const lteName = attributes.addName(condition.path)
+        const lteValue = attributes.addValue(condition.value)
         expression += `${lteName} <= ${lteValue}`
         break
       case 'beginsWith':
-        const bwName = expressionAttributes.addName(condition.path)
-        const bwValue = expressionAttributes.addValue(condition.value)
+        const bwName = attributes.addName(condition.path)
+        const bwValue = attributes.addValue(condition.value)
         expression += `begins_with(${bwName}, ${bwValue})`
         break
       case 'between':
-        const betweenName = expressionAttributes.addName(condition.path)
-        const betweenOneValue = expressionAttributes.addValue(condition.valueOne)
-        const betweenTwoValue = expressionAttributes.addValue(condition.valueTwo)
+        const betweenName = attributes.addName(condition.path)
+        const betweenOneValue = attributes.addValue(condition.valueOne)
+        const betweenTwoValue = attributes.addValue(condition.valueTwo)
         expression += `${betweenName} between ${betweenOneValue} and ${betweenTwoValue}`
         break
       case 'exists':
-        const existsName = expressionAttributes.addName(condition.path)
+        const existsName = attributes.addName(condition.path)
         expression += `attribute_exists(${existsName})`
         break
       case 'notExists':
-        const notExistsName = expressionAttributes.addName(condition.path)
+        const notExistsName = attributes.addName(condition.path)
         expression += `attribute_not_exists(${notExistsName})`
         break
       case 'contains':
-        const containsName = expressionAttributes.addName(condition.path)
-        const containsValue = expressionAttributes.addValue(condition.value)
+        const containsName = attributes.addName(condition.path)
+        const containsValue = attributes.addValue(condition.value)
         expression += `contains(${containsName}, ${containsValue})`
         break
       case 'anyOf':
-        const anyOfName = expressionAttributes.addName(condition.path)
+        const anyOfName = attributes.addName(condition.path)
         const anyOfValues: string[] = []
 
         for (const value of condition.values) {
-          const anyOfValue = expressionAttributes.addValue(value)
+          const anyOfValue = attributes.addValue(value)
           anyOfValues.push(anyOfValue)
         }
 
@@ -138,12 +140,12 @@ export const createConditionExpression = (name: string, ...conditions: Condition
 
         break
       case 'type':
-        const typeName = expressionAttributes.addName(condition.path)
-        const typeValue = expressionAttributes.addValue(condition.value)
+        const typeName = attributes.addName(condition.path)
+        const typeValue = attributes.addValue(condition.value)
         expression += `attribute_type(${typeName}, ${typeValue})`
         break
       case 'size':
-        const sizeName = expressionAttributes.addName(condition.path)
+        const sizeName = attributes.addName(condition.path)
         expression += `size(${sizeName})`
         break
       default:
@@ -157,7 +159,7 @@ export const createConditionExpression = (name: string, ...conditions: Condition
 
   return {
     expression: expression.trim(),
-    expressionAttributeNames: expressionAttributes.expressionAttributeNames,
-    expressionAttributeValues: expressionAttributes.expressionAttributeValues
+    expressionAttributeNames: attributes.expressionAttributeNames,
+    expressionAttributeValues: attributes.expressionAttributeValues
   }
 }

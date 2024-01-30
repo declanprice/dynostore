@@ -4,6 +4,7 @@ import { ItemKey } from '../item/item-key'
 import { createUpdateExpression, UpdateExpression } from '../expressions/update/update-expression'
 import { ConditionExpression, createConditionExpression } from '../expressions/condition/condition-expression'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
+import { ExpressionAttributes } from '../expressions'
 
 type UpdateItemBuilderOptions = {
   key?: ItemKey
@@ -14,6 +15,7 @@ type UpdateItemBuilderOptions = {
 
 export class UpdateItemBuilder<Item> {
   private options: UpdateItemBuilderOptions = {}
+  private readonly attributes = new ExpressionAttributes()
 
   constructor(
     private readonly tableName: string,
@@ -26,12 +28,12 @@ export class UpdateItemBuilder<Item> {
   }
 
   condition(...conditions: ConditionExpression[]): UpdateItemBuilder<Item> {
-    this.options.conditionExpression = createConditionExpression('condition', ...conditions)
+    this.options.conditionExpression = createConditionExpression(this.attributes, ...conditions)
     return this
   }
 
   update(...updates: UpdateExpression[]): UpdateItemBuilder<Item> {
-    this.options.updateExpression = createUpdateExpression('update', ...updates)
+    this.options.updateExpression = createUpdateExpression(this.attributes, ...updates)
     return this
   }
 
@@ -45,32 +47,14 @@ export class UpdateItemBuilder<Item> {
     if (!key) throw new Error('[invalid options] - key is required')
     if (!updateExpression) throw new Error('[invalid options] - update expression is required')
 
-    const hasExpressionName =
-      updateExpression?.expressionAttributeNames !== undefined ||
-      conditionExpression?.expressionAttributeValues !== undefined
-
-    const hasExpressionValues =
-      updateExpression?.expressionAttributeValues !== undefined ||
-      conditionExpression?.expressionAttributeValues !== undefined
-
     const result = await this.client.send(
       new UpdateItemCommand({
         TableName: this.tableName,
         Key: marshall(key),
         UpdateExpression: updateExpression.expression,
         ConditionExpression: conditionExpression?.expression,
-        ExpressionAttributeNames: hasExpressionName
-          ? {
-              ...updateExpression.expressionAttributeNames,
-              ...conditionExpression?.expressionAttributeNames
-            }
-          : undefined,
-        ExpressionAttributeValues: hasExpressionValues
-          ? {
-              ...updateExpression.expressionAttributeValues,
-              ...conditionExpression?.expressionAttributeValues
-            }
-          : undefined,
+        ExpressionAttributeNames: this.attributes.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         ReturnValues: returnValue
       })
     )
@@ -85,32 +69,14 @@ export class UpdateItemBuilder<Item> {
     if (!key) throw new Error('[invalid options] - key is required')
     if (!updateExpression) throw new Error('[invalid options] - update expression is required')
 
-    const hasExpressionName =
-      updateExpression?.expressionAttributeNames !== undefined ||
-      conditionExpression?.expressionAttributeValues !== undefined
-
-    const hasExpressionValues =
-      updateExpression?.expressionAttributeValues !== undefined ||
-      conditionExpression?.expressionAttributeValues !== undefined
-
     return {
       Update: {
         TableName: this.tableName,
         Key: marshall(key),
         UpdateExpression: updateExpression.expression,
         ConditionExpression: conditionExpression?.expression,
-        ExpressionAttributeNames: hasExpressionName
-          ? {
-              ...updateExpression.expressionAttributeNames,
-              ...conditionExpression?.expressionAttributeNames
-            }
-          : undefined,
-        ExpressionAttributeValues: hasExpressionValues
-          ? {
-              ...updateExpression.expressionAttributeValues,
-              ...conditionExpression?.expressionAttributeValues
-            }
-          : undefined,
+        ExpressionAttributeNames: this.attributes.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         ReturnValuesOnConditionCheckFailure: returnValue === 'ALL_OLD' ? 'ALL_OLD' : undefined
       }
     }

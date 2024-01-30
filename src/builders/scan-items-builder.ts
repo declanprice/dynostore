@@ -3,6 +3,7 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import { ConditionExpression, createConditionExpression } from '../expressions/condition/condition-expression'
 import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
+import { ExpressionAttributes } from '../expressions'
 
 type ScanItemsBuilderOptions<Item> = {
   indexName?: string
@@ -20,6 +21,7 @@ type ScanItemsBuilderOptions<Item> = {
 
 export class ScanItemsBuilder<Item> {
   private options: ScanItemsBuilderOptions<Item> = {}
+  private readonly attributes = new ExpressionAttributes()
 
   constructor(
     readonly tableName: string,
@@ -32,7 +34,7 @@ export class ScanItemsBuilder<Item> {
   }
 
   filter(...conditions: ConditionExpression[]): ScanItemsBuilder<Item> {
-    this.options.filter = createConditionExpression('filter', ...conditions)
+    this.options.filter = createConditionExpression(this.attributes, ...conditions)
     return this
   }
 
@@ -74,8 +76,8 @@ export class ScanItemsBuilder<Item> {
         ConsistentRead: consistent,
         ProjectionExpression: projection,
         FilterExpression: filter?.expression,
-        ExpressionAttributeNames: filter?.expressionAttributeNames,
-        ExpressionAttributeValues: filter?.expressionAttributeValues,
+        ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         Limit: limit,
         ExclusiveStartKey: marshall(startAt),
         TotalSegments: parallel?.totalSegments,

@@ -17,9 +17,10 @@ export type UpdateExpression =
   | RemoveExpression
   | SetExpression
 
-export const createUpdateExpression = (name: string, ...updates: UpdateExpression[]): Expression => {
-  const attributes = new ExpressionAttributes(name)
-
+export const createUpdateExpression = (
+  attributes: ExpressionAttributes,
+  ...updates: UpdateExpression[]
+): Expression => {
   let expressions: string[] = []
 
   for (const update of updates) {

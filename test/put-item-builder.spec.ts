@@ -29,14 +29,14 @@ describe('PutItemBuilder', () => {
           S: validTestId
         }
       },
-      ConditionExpression: '#condition_0 = :condition_1 or #condition_2 = :condition_3',
+      ConditionExpression: '#0 = :1 or #2 = :3',
       ExpressionAttributeNames: {
-        '#condition_0': 'name',
-        '#condition_2': 'age'
+        '#0': 'name',
+        '#2': 'age'
       },
       ExpressionAttributeValues: {
-        ':condition_1': { S: 'dec' },
-        ':condition_3': { N: '25' }
+        ':1': { S: 'dec' },
+        ':3': { N: '25' }
       }
     })
   })

@@ -7,6 +7,7 @@ import {
 } from '../expressions/condition/condition-expression'
 import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
+import { ExpressionAttributes } from '../expressions'
 
 type QueryBuilderOptions = {
   indexName?: string
@@ -27,6 +28,7 @@ type QueryBuilderOptions = {
 
 export class QueryItemsBuilder<Item> {
   private options: QueryBuilderOptions = {}
+  private attributes = new ExpressionAttributes()
 
   constructor(
     private readonly tableName: string,
@@ -42,12 +44,12 @@ export class QueryItemsBuilder<Item> {
   sk(path: string, condition: KeyConditionExpression) {
     this.options.sk = {
       path,
-      condition: createConditionExpression('key', condition)
+      condition: createConditionExpression(this.attributes, condition)
     }
   }
 
   filter(...conditions: ConditionExpression[]): QueryItemsBuilder<Item> {
-    this.options.filter = createConditionExpression('filter', ...conditions)
+    this.options.filter = createConditionExpression(this.attributes, ...conditions)
     return this
   }
 
@@ -76,12 +78,6 @@ export class QueryItemsBuilder<Item> {
 
     if (!pk) throw new Error('[invalid options] - pk is missing')
 
-    const hasExpressionName =
-      sk?.condition.expressionAttributeNames !== undefined || filter?.expressionAttributeValues !== undefined
-
-    const hasExpressionValues =
-      sk?.condition.expressionAttributeValues !== undefined || filter?.expressionAttributeValues !== undefined
-
     const response = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
@@ -89,12 +85,8 @@ export class QueryItemsBuilder<Item> {
         ProjectionExpression: projection,
         KeyConditionExpression: sk?.condition.expression,
         FilterExpression: filter?.expression,
-        ExpressionAttributeNames: hasExpressionName
-          ? { ...sk?.condition.expressionAttributeNames, ...filter?.expressionAttributeNames }
-          : undefined,
-        ExpressionAttributeValues: hasExpressionValues
-          ? { ...sk?.condition.expressionAttributeValues, ...filter?.expressionAttributeValues }
-          : undefined,
+        ExpressionAttributeNames: this.attributes.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         Limit: limit,
         ExclusiveStartKey: marshall(startAt),
         ScanIndexForward: sort !== 'desc'
