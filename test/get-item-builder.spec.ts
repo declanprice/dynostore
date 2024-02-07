@@ -70,12 +70,12 @@ describe('GetItemBuilder', () => {
 
 describe('GetItemBuilder - errors', () => {
 
-    it('exec should throw error if key is missing', () => {
+    it('exec should throw error if key is missing', async () => {
         const builder = new GetItemBuilder(testTableName, testClient);
 
-        expect(() => {
-            builder.exec();
-        }).toThrow('[invalid options] - key is missing')
+        await expect(async () => {
+            await builder.exec();
+        }).rejects.toThrow('[invalid options] - key is missing')
     })
 
     it('tx() should throw error if key is missing', () => {
