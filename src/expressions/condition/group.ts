@@ -1,13 +1,13 @@
-import {ConditionExpression} from "./condition-expression";
+import { ConditionExpression } from './condition-expression'
 
 export type GroupExpression = {
-    type: 'group',
-    conditions: ConditionExpression[];
+  type: 'group'
+  conditions: ConditionExpression[]
 }
 
 export const group = (...conditions: ConditionExpression[]): GroupExpression => {
-    return {
-        type: 'group',
-        conditions
-    }
+  return {
+    type: 'group',
+    conditions
+  }
 }

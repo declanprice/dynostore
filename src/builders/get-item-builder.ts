@@ -1,54 +1,69 @@
-import {DynamoDBClient, GetItemCommand, TransactGetItem} from "@aws-sdk/client-dynamodb";
-import {marshall, unmarshall} from "@aws-sdk/util-dynamodb";
-import {ItemKey} from "../item/item-key";
+import { DynamoDBClient, GetItemCommand, TransactGetItem } from '@aws-sdk/client-dynamodb'
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
+import { ItemKey } from '../item/item-key'
 
-type GetBuilderOptions = {
-    key?: ItemKey,
-    consistent?: boolean;
+type GetBuilderOptions<Item> = {
+  key?: ItemKey
+  consistent?: boolean
+  projection?: string
 }
 
-export class GetItemBuilder {
+export class GetItemBuilder<Item> {
+  private readonly options: GetBuilderOptions<Item>
 
-    private options: GetBuilderOptions = {}
+  constructor(
+    private readonly tableName: string,
+    private readonly client: DynamoDBClient,
+    private readonly defaults: GetBuilderOptions<Item> = {}
+  ) {
+    this.options = { ...defaults }
+  }
 
-    constructor(readonly tableName: string, readonly client: DynamoDBClient) {}
+  key(key: ItemKey): GetItemBuilder<Item> {
+    this.options.key = key
+    return this
+  }
 
-    key(key: ItemKey): GetItemBuilder {
-        this.options.key = key;
-        return this;
+  consistent(): GetItemBuilder<Item> {
+    this.options.consistent = true
+    return this
+  }
+
+  project(projection: string): GetItemBuilder<Item> {
+    this.options.projection = projection
+    return this
+  }
+
+  async exec(): Promise<Item | null> {
+    const { key, consistent, projection } = this.options
+
+    if (!key) throw new Error('[invalid options] - key is missing')
+
+    const response = await this.client.send(
+      new GetItemCommand({
+        TableName: this.tableName,
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
+        ConsistentRead: consistent,
+        ProjectionExpression: projection
+      })
+    )
+
+    if (!response.Item) return null
+
+    return unmarshall(response.Item) as Item
+  }
+
+  tx(): TransactGetItem {
+    const { key, projection } = this.options
+
+    if (!key) throw new Error('[invalid options] - key is missing')
+
+    return {
+      Get: {
+        TableName: this.tableName,
+        Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
+        ProjectionExpression: projection
+      }
     }
-
-    consistent(isConsistent: boolean): GetItemBuilder {
-        this.options.consistent = isConsistent;
-        return this;
-    }
-
-    async exec<Item>(): Promise<Item | null> {
-        const { key, consistent } = this.options;
-
-        if (!key) throw new Error('[invalid options] - key is missing');
-
-        const response = await this.client.send(new GetItemCommand({
-            TableName: this.tableName,
-            Key: marshall(key),
-            ConsistentRead: consistent,
-        }));
-
-        if (!response.Item) return null;
-
-        return unmarshall(response.Item) as Item;
-    }
-
-    tx(): TransactGetItem {
-        const { key } = this.options;
-
-        if (!key) throw new Error('[invalid options] - key is missing');
-
-        return {
-            Get: {
-                TableName: this.tableName,
-                Key: marshall(key),
-            }
-        }
-    }
+  }
 }

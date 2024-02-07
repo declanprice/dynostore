@@ -1,69 +1,74 @@
-import {AttributeValue, DynamoDBClient, PutItemCommand, TransactWriteItem} from "@aws-sdk/client-dynamodb";
-import {marshall} from "@aws-sdk/util-dynamodb";
-import {ConditionExpression, convertToExpression} from "../expressions/condition/condition-expression";
+import { DynamoDBClient, PutItemCommand, TransactWriteItem } from '@aws-sdk/client-dynamodb'
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
+import { createConditionExpression, ConditionExpression } from '../expressions/condition/condition-expression'
+import { Expression } from '../expressions/expression'
+import { ExpressionAttributes } from '../expressions'
 
-type PutBuilderOptions = {
-    item?: any,
-    conditionExpression?: string
-    expressionAttributeNames?: { [key: string]: string }
-    expressionAttributeValues?: { [key: string]: AttributeValue }
+type PutBuilderOptions<Item> = {
+  item?: Item
+  conditionExpression?: Expression
+  returnOld?: boolean
 }
 
-export class PutItemBuilder {
+export class PutItemBuilder<Item> {
+  private options: PutBuilderOptions<Item> = {}
+  private attributes = new ExpressionAttributes()
 
-    private options: PutBuilderOptions = {}
+  constructor(
+    private readonly tableName: string,
+    private readonly client: DynamoDBClient
+  ) {}
 
-    constructor(readonly tableName: string, readonly client: DynamoDBClient) {}
+  item(item: Item): PutItemBuilder<Item> {
+    this.options.item = item
+    return this
+  }
 
-    item(item: any): PutItemBuilder {
-        this.options.item = item;
-        return this;
+  condition(...conditions: ConditionExpression[]): PutItemBuilder<Item> {
+    this.options.conditionExpression = createConditionExpression(this.attributes, ...conditions)
+    return this
+  }
+
+  returnOld(): PutItemBuilder<Item> {
+    this.options.returnOld = true
+    return this
+  }
+
+  async exec(): Promise<Item | null> {
+    const { item, conditionExpression, returnOld } = this.options
+
+    if (!item) throw new Error('[invalid options] - item is missing')
+
+    const result = await this.client.send(
+      new PutItemCommand({
+        TableName: this.tableName,
+        Item: marshall(item, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
+        ConditionExpression: conditionExpression?.expression,
+        ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
+        ReturnValues: returnOld === true ? 'ALL_OLD' : 'NONE'
+      })
+    )
+
+    if (!result?.Attributes) return null
+
+    return unmarshall(result.Attributes) as Item
+  }
+
+  tx(): TransactWriteItem {
+    const { item, conditionExpression, returnOld } = this.options
+
+    if (!item) throw new Error('[invalid options] - item is missing')
+
+    return {
+      Put: {
+        TableName: this.tableName,
+        Item: marshall(item, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
+        ConditionExpression: conditionExpression?.expression,
+        ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
+        ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
+        ReturnValuesOnConditionCheckFailure: returnOld === true ? 'ALL_OLD' : 'NONE'
+      }
     }
-
-    condition(...conditions: ConditionExpression[]): PutItemBuilder {
-        const {expression, expressionAttributeNames, expressionAttributeValues} = convertToExpression(...conditions);
-        this.options.conditionExpression = expression;
-        this.options.expressionAttributeNames = expressionAttributeNames;
-        this.options.expressionAttributeValues = expressionAttributeValues
-        return this;
-    }
-
-    async exec(): Promise<void> {
-        const { item, conditionExpression, expressionAttributeNames, expressionAttributeValues } = this.options;
-
-        if (!item) throw new Error('[invalid options] - item is missing');
-
-        await this.client.send(new PutItemCommand({
-            TableName: this.tableName,
-            Item: marshall(item),
-            ConditionExpression: conditionExpression,
-            ExpressionAttributeNames: expressionAttributeNames,
-            ExpressionAttributeValues: expressionAttributeValues
-        }))
-    }
-
-    tx(): TransactWriteItem {
-        const { item, conditionExpression, expressionAttributeNames, expressionAttributeValues } = this.options;
-
-        if (!item) throw new Error('[invalid options] - item is missing');
-
-        return {
-            Put: {
-                TableName: this.tableName,
-                Item: marshall(item),
-                ConditionExpression: conditionExpression,
-                ExpressionAttributeNames: expressionAttributeNames,
-                ExpressionAttributeValues: expressionAttributeValues
-            }
-        }
-    }
+  }
 }
-
-
-// store
-//     .put(item)
-//     .condition(
-//         group([eq('name', 'declan'), or(), eq('name', 'ryan')]),
-//         and(),
-//         lt('age', 25)
-//     )
