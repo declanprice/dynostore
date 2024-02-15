@@ -1,5 +1,5 @@
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
-import { Store } from '../src/store'
+import { Store } from '../src'
 import { marshall } from '@aws-sdk/util-dynamodb'
 import { wait } from './wait'
 

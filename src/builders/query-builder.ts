@@ -16,7 +16,6 @@ type QueryBuilderOptions = {
     value: string | number
   }
   sk?: {
-    path: string
     condition: Expression
   }
   projection?: string
@@ -43,9 +42,8 @@ export class QueryItemsBuilder<Item> {
     return this
   }
 
-  sk(path: string, condition: KeyConditionExpression): QueryItemsBuilder<Item> {
+  sk(condition: KeyConditionExpression): QueryItemsBuilder<Item> {
     this.options.sk = {
-      path,
       condition: createConditionExpression(this.attributes, condition)
     }
     return this
