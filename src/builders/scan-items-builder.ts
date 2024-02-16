@@ -5,7 +5,12 @@ import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
 import { ExpressionAttributes } from '../expressions'
 
-type ScanItemsBuilderOptions<Item> = {
+export type ScanResponse<Item> = {
+  items: Item[]
+  lastKey: any | null
+}
+
+type ScanItemsBuilderOptions = {
   indexName?: string
   projection?: string
   filter?: Expression
@@ -20,7 +25,7 @@ type ScanItemsBuilderOptions<Item> = {
 }
 
 export class ScanItemsBuilder<Item> {
-  private options: ScanItemsBuilderOptions<Item> = {}
+  private options: ScanItemsBuilderOptions = {}
   private readonly attributes = new ExpressionAttributes()
 
   constructor(
@@ -66,7 +71,7 @@ export class ScanItemsBuilder<Item> {
     return this
   }
 
-  async exec<ItemType>(): Promise<{ items: ItemType[]; lastKey: ItemKey | null }> {
+  async exec<Item>(): Promise<ScanResponse<Item>> {
     const { indexName, consistent, projection, filter, limit, startAt, parallel } = this.options
 
     const response = await this.client.send(
@@ -90,7 +95,7 @@ export class ScanItemsBuilder<Item> {
     }
 
     return {
-      items: response.Items.map((i) => unmarshall(i)) as ItemType[],
+      items: response.Items.map((i) => unmarshall(i)) as Item[],
       lastKey: response.LastEvaluatedKey ? unmarshall(response.LastEvaluatedKey) : null
     }
   }

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 # QueryItems
@@ -101,7 +101,7 @@ query.sort('desc')
 Queries will only be run once you specifically execute it.
 
 ```tsx
-const response: QueryResponse<CustomerItem>[] = await.exec();
+const response: QueryResponse<CustomerItem>[] = query.exec();
 
 const items = response.items;
 

@@ -146,7 +146,8 @@ export const createConditionExpression = (
         break
       case 'size':
         const sizeName = attributes.addName(condition.path)
-        expression += `size(${sizeName})`
+        const sizeValue = attributes.addValue(condition.value)
+        expression += `size(${sizeName}) = ${sizeValue}`
         break
       default:
         break

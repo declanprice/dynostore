@@ -22,11 +22,7 @@ import { Store } from '@declanprice/noxa'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const builder = store.get<CustomerItem>()
-
-builder.key()
-builder.project()
-await builder.exec()
+store.get<CustomerItem>().key({id: customer.id }).project('id,firstName')
 ```
 
 

@@ -84,7 +84,7 @@ export class QueryItemsBuilder<Item> {
     return this
   }
 
-  async exec(): Promise<{ items: Item[]; lastKey: ItemKey | null }> {
+  async exec(): Promise<QueryResponse<Item>> {
     const { pk, sk, projection, filter, limit, startAt, sort } = this.options
 
     if (!pk) throw new Error('[invalid options] - pk is missing')
@@ -108,11 +108,9 @@ export class QueryItemsBuilder<Item> {
       return [] as any
     }
 
-    const queryResponse: QueryResponse<Item> = {
+    return {
       items: response.Items.map((i) => unmarshall(i)) as Item[],
       lastKey: response.LastEvaluatedKey ? unmarshall(response.LastEvaluatedKey) : null
     }
-
-    return queryResponse
   }
 }

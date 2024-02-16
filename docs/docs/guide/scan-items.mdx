@@ -1,152 +1,101 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # ScanItems
 
-Docusaurus supports **[Markdown](https://daringfireball.net/projects/markdown/syntax)** and a few **additional features**.
+### Store.scan()
 
-## Front Matter
+```tsx
+import { Store } from '@declanprice/noxa'
 
-Markdown documents have metadata at the top called [Front Matter](https://jekyllrb.com/docs/front-matter/):
+const store = new Store('customers', new new DynamoDBClient())
 
-```text title="my-doc.md"
-// highlight-start
----
-id: my-doc-id
-title: My document title
-description: My document description
-slug: /my-custom-url
----
-// highlight-end
-
-## Markdown heading
-
-Markdown text with [links](./hello.md)
+const scan = await store.scan<CustomerItem | OtherItemType>();
 ```
 
-## Links
+### using(index)
 
-Regular Markdown links are supported, using url paths or relative file paths.
+Scans can optionally target a specific index
 
-```md
-Let's see how to [Create a page](/create-a-page).
+```tsx
+scan.using('indexName')
 ```
 
-```md
-Let's see how to [Create a page](./create-a-page.md).
+### filter(...conditions)
+
+Scans can be filtered using any combination of conditions, conditions must always be seperated by either and(), or() conditions otherwise an error fill be thrown.
+
+```tsx
+scan.filter(
+    group(
+      gt('age', 2),
+      and(),
+      lt('age', 30)
+    )
+    or(),
+    eq('age', 33)
+)
 ```
 
-**Result:** Let's see how to [Create a page](./create-a-page.md).
+### project(projection)
 
-## Images
+Scans optionally project specific attributes using comma seperated values.
 
-Regular Markdown images are supported.
-
-You can use absolute paths to reference images in the static directory (`static/img/docusaurus.png`):
-
-```md
-![Docusaurus logo](/img/docusaurus.png)
+```tsx
+scan.project('id,fistName,lastName')
 ```
 
-![Docusaurus logo](/img/docusaurus.png)
+### limit(count)
 
-You can reference images relative to the current file as well. This is particularly useful to colocate images close to the Markdown files using them:
+Scans can be limited to a specific amount of items returned.
 
-```md
-![Docusaurus logo](./img/docusaurus.png)
+```tsx
+scan.limit(100)
 ```
 
-## Code Blocks
+### startAt(key)
 
-Markdown code blocks are supported with Syntax highlighting.
+Scans can be started from a specific key for pagination purposes, if the previous query returns a valid `lastKey` property you can pass it into the next query.
 
-````md
-```jsx title="src/components/HelloDocusaurus.js"
-function HelloDocusaurus() {
-  return <h1>Hello, Docusaurus!</h1>;
-}
-```
-````
-
-```jsx title="src/components/HelloDocusaurus.js"
-function HelloDocusaurus() {
-  return <h1>Hello, Docusaurus!</h1>;
-}
+```tsx
+scan.startAt({id: '123'})
 ```
 
-## Admonitions
+### sort(direction)
 
-Docusaurus has a special syntax to create admonitions and callouts:
+Scans can optionally can be sorted in ascending or descending order, the default is ascending.
 
-```md
-:::tip My tip
+```tsx
+scan.sort('asc')
 
-Use this awesome feature option
-
-:::
-
-:::danger Take care
-
-This action is dangerous
-
-:::
+scan.sort('desc')
 ```
 
-:::tip My tip
+### parallel(totalSegments, currentSegment)
 
-Use this awesome feature option
+Scans can optionally be ran in parallel, you must provide the total segments and the current segment.
 
-:::
-
-:::danger Take care
-
-This action is dangerous
-
-:::
-
-## MDX and React Components
-
-[MDX](https://mdxjs.com/) can make your documentation more **interactive** and allows using any **React components inside Markdown**:
-
-```jsx
-export const Highlight = ({children, color}) => (
-  <span
-    style={{
-      backgroundColor: color,
-      borderRadius: '20px',
-      color: '#fff',
-      padding: '10px',
-      cursor: 'pointer',
-    }}
-    onClick={() => {
-      alert(`You clicked the color ${color} with label ${children}`)
-    }}>
-    {children}
-  </span>
-);
-
-This is <Highlight color="#25c2a0">Docusaurus green</Highlight> !
-
-This is <Highlight color="#1877F2">Facebook blue</Highlight> !
+```tsx
+scan.parallel(4, 1);
 ```
 
-export const Highlight = ({children, color}) => (
-  <span
-    style={{
-      backgroundColor: color,
-      borderRadius: '20px',
-      color: '#fff',
-      padding: '10px',
-      cursor: 'pointer',
-    }}
-    onClick={() => {
-      alert(`You clicked the color ${color} with label ${children}`);
-    }}>
-    {children}
-  </span>
-);
+### exec()
 
-This is <Highlight color="#25c2a0">Docusaurus green</Highlight> !
+Scans will only be run once you specifically execute it.
 
-This is <Highlight color="#1877F2">Facebook blue</Highlight> !
+```tsx
+const response: ScanResponse<CustomerItem | OtherItemType>[] = scan.exec();
+
+const items = response.items;
+
+const lastKey = response.lastKey;
+```
+
+A `ScanResponse` contains the following properties:
+
+
+| Syntax      | Description |
+| ----------- | ----------- |
+| items       | when items are found the items property will be an array of unmarshalled items, if no items are found it will be an empty array |
+| lastKey     | If there are more items available then lastKey will be populated with the last key returned from the query |
