@@ -35,6 +35,7 @@ describe('GetItem', () => {
 
   it('should return item successfully', async () => {
     const item = await store.get<CustomerItem>().key({ pk: customer.pk, sk: customer.sk }).exec()
+
     if (!item) throw new Error('item not found')
     expect(item).toBeTruthy()
     expect(item.pk).toEqual(customer.pk)

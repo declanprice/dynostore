@@ -4,27 +4,57 @@ sidebar_position: 2
 
 # GetItem
 
-How to get an item.
-
-## Usage
-
-### Get item
+### Store.get()
 
 ```tsx
 import { Store } from '@declanprice/noxa'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const customer = await store.get<CustomerItem>().key({ id: customer.id }).exec()
+const getItem = await store.get<CustomerItem>();
+```
+
+### key(key)
+
+Get item must always contain a key object.
+
+```tsx
+getItem.key({ id: customer.id });
+```
+
+### consistent(key)
+
+Get item can optionally be read the item with strong consistency.
+
+```tsx
+getItem.consistent();
+```
+
+### project(projection)
+
+Get item can optionally project specific attributes using comma seperated values.
+
+```tsx
+getItem.project('id,fistName,lastName')
 ```
 
 
-### Get item with projection
+### exec()
+
+Get item will only be run once you specifically execute it.
+
+The response from exec will be the unmarshalled item.
 
 ```tsx
-import { Store } from '@declanprice/noxa'
+const customer: Customer = getItem.exec();
+```
 
-const store = new Store('customers', new new DynamoDBClient())
+### tx()
 
-const customer = await store.get<CustomerItem>().key({ id: customer.id }).project('id,firstName,lastName').exec()
+Get item can be used within a transaction
+
+```tsx
+const getCustomerTx = getItem.tx();
+
+await transactGetItems(getCustomerTx);
 ```

@@ -4,26 +4,64 @@ sidebar_position: 4
 
 # DeleteItem
 
-How to delete an item.
-
-### Delete an item.
+### Store.delete()
 
 ```tsx
 import { Store } from '@declanprice/noxa'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-await store.delete<CustomerItem>().key({ id: customer.id }).exec()
+const deleteItem = await store.delete<CustomerItem>();
 ```
 
+### key(itemKey)
 
-### Delete an item with a transaction.
+Delete item must always contain an key object.
+
 ```tsx
-import { Store } from '@declanprice/noxa'
+deleteItem.key({ id: customer.id });
+```
 
-const store = new Store('customers', new new DynamoDBClient())
+### condition(...conditions)
 
-const customer = store.delete<CustomerItem>().key({ id: customer.id }).tx()
+Delete item can optionally provide any combination of conditions that must be met for the request to succeed, conditions must always be seperated by either and(), or() conditions otherwise an error fill be thrown.
 
-await transactWriteItems(customer);
+Conditions only apply to the current item being deleted.
+
+```tsx
+deleteItem.condition(
+    eq('name', 'declan'),
+    and(),
+    gt('age', 22)
+);
+```
+
+### returnOld()
+
+Delete item can optionally return the old item as part of the response.
+
+```tsx
+deleteItem.returnOld()
+```
+
+### exec()
+
+Delete item will only be run once you specifically execute it.
+
+The response from exec will either be the old unmarshalled item if `returnOld` is specified, otherwise it will be null.
+
+```tsx
+const oldCustomer: Customer = await deleteItem.exec();
+
+await deleteItem.exec();
+```
+
+### tx()
+
+Delete item can be used within a transaction
+
+```tsx
+const customerTx: Customer = deleteItem.tx();
+
+await transactWriteItems(customerTx);
 ```

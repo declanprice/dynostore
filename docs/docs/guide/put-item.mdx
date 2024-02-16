@@ -4,27 +4,64 @@ sidebar_position: 3
 
 # PutItem
 
-How to put an item.
-
-### Put an item.
+### Store.put()
 
 ```tsx
 import { Store } from '@declanprice/noxa'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-await store.put<CustomerItem>().item({ id: customer.id }).exec()
+const putItem = await store.put<CustomerItem>();
 ```
 
+### item(object)
 
-### Put an item with a transaction.
+Put item must always contain an item object.
+
 ```tsx
-import { Store } from '@declanprice/noxa'
-
-const store = new Store('customers', new new DynamoDBClient())
-
-const customer = store.put<CustomerItem>().item({ id: customer.id }).tx()
-
-await transactWriteItems(customer);
+putItem.item({ id: customer.id, firstName: customer.firstName });
 ```
 
+### condition(...conditions)
+
+Put item can optionally provide any combination of conditions that must be met for the request to succeed, conditions must always be seperated by either and(), or() conditions otherwise an error fill be thrown.
+
+Conditions only apply to the current item being put.
+
+```tsx
+putItem.condition(
+    eq('name', 'declan'),
+    and(),
+    gt('age', 22)
+);
+```
+
+### returnOld()
+
+Put item can optionally return the old item as part of the response.
+
+```tsx
+putItem.returnOld()
+```
+
+### exec()
+
+Put item will only be run once you specifically execute it.
+
+The response from exec will either be the old unmarshalled item if `returnOld` is specified, otherwise it will be null.
+
+```tsx
+const oldCustomer: Customer = await putItem.exec();
+
+await putItem.exec();
+```
+
+### tx()
+
+Put item can be used within a transaction
+
+```tsx
+const customerTx: Customer = putItem.tx();
+
+await transactWriteItems(customerTx);
+```
