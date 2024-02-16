@@ -11,7 +11,7 @@ import { Store } from '@declanprice/noxa'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const deleteItem = await store.delete<CustomerItem>();
+const delete = await store.delete<CustomerItem>();
 ```
 
 ### key(itemKey)
@@ -19,7 +19,7 @@ const deleteItem = await store.delete<CustomerItem>();
 Delete item must always contain an key object.
 
 ```tsx
-deleteItem.key({ id: customer.id });
+delete.key({ id: customer.id });
 ```
 
 ### condition(...conditions)
@@ -29,7 +29,7 @@ Delete item can optionally provide any combination of conditions that must be me
 Conditions only apply to the current item being deleted.
 
 ```tsx
-deleteItem.condition(
+delete.condition(
     eq('name', 'declan'),
     and(),
     gt('age', 22)
@@ -41,7 +41,7 @@ deleteItem.condition(
 Delete item can optionally return the old item as part of the response.
 
 ```tsx
-deleteItem.returnOld()
+delete.returnOld()
 ```
 
 ### exec()
@@ -51,9 +51,9 @@ Delete item will only be run once you specifically execute it.
 The response from exec will either be the old unmarshalled item if `returnOld` is specified, otherwise it will be null.
 
 ```tsx
-const oldCustomer: Customer = await deleteItem.exec();
+const oldCustomer: Customer = await delete.exec();
 
-await deleteItem.exec();
+await delete.exec();
 ```
 
 ### tx()
@@ -61,7 +61,7 @@ await deleteItem.exec();
 Delete item can be used within a transaction
 
 ```tsx
-const customerTx: Customer = deleteItem.tx();
+const customerTx: Customer = delete.tx();
 
 await transactWriteItems(customerTx);
 ```

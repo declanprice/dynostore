@@ -11,7 +11,7 @@ import { Store } from '@declanprice/noxa'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const getItem = await store.get<CustomerItem>();
+const get = await store.get<CustomerItem>();
 ```
 
 ### key(key)
@@ -19,7 +19,7 @@ const getItem = await store.get<CustomerItem>();
 Get item must always contain a key object.
 
 ```tsx
-getItem.key({ id: customer.id });
+get.key({ id: customer.id });
 ```
 
 ### consistent(key)
@@ -27,7 +27,7 @@ getItem.key({ id: customer.id });
 Get item can optionally be read the item with strong consistency.
 
 ```tsx
-getItem.consistent();
+get.consistent();
 ```
 
 ### project(projection)
@@ -35,7 +35,7 @@ getItem.consistent();
 Get item can optionally project specific attributes using comma seperated values.
 
 ```tsx
-getItem.project('id,fistName,lastName')
+get.project('id,fistName,lastName')
 ```
 
 
