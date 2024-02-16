@@ -9,7 +9,7 @@ import { themes as prismThemes } from 'prism-react-renderer'
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Dynostore',
-  tagline: 'easy to use api for dynamodb',
+  tagline: 'easy to use guide for dynamodb',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here

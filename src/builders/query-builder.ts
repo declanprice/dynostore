@@ -9,6 +9,11 @@ import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
 import { ExpressionAttributes } from '../expressions'
 
+export type QueryResponse<Item> = {
+  items: Item[]
+  lastKey: any | null
+}
+
 type QueryBuilderOptions = {
   indexName?: string
   pk?: {
@@ -103,9 +108,11 @@ export class QueryItemsBuilder<Item> {
       return [] as any
     }
 
-    return {
+    const queryResponse: QueryResponse<Item> = {
       items: response.Items.map((i) => unmarshall(i)) as Item[],
       lastKey: response.LastEvaluatedKey ? unmarshall(response.LastEvaluatedKey) : null
     }
+
+    return queryResponse
   }
 }

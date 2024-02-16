@@ -1,0 +1,29 @@
+---
+sidebar_position: 4
+---
+
+# DeleteItem
+
+How to delete an item.
+
+### Delete an item.
+
+```tsx
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+await store.delete<CustomerItem>().key({ id: customer.id }).exec()
+```
+
+
+### Delete an item with a transaction.
+```tsx
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+const customer = store.delete<CustomerItem>().key({ id: customer.id }).tx()
+
+await transactWriteItems(customer);
+```

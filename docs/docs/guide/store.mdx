@@ -1,0 +1,52 @@
+---
+sidebar_position: 1
+---
+
+# Store
+
+
+## Creating a store
+
+```tsx title="Create a store"
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+```
+
+### Usage
+
+Stores expose high level api builders for each dynamodb query type (GetItem/PutItem/DeleteItem/QueryItems/ScanItems).
+
+```tsx title="Usage"
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+const builder = store.get<CustomerItem>()
+
+builder.key()
+builder.project()
+await builder.exec()
+```
+
+
+### Execute a query
+
+Queries are not ran until you execute the builder
+
+```tsx title="execute a query"
+const customer = await store.get<CustomerItem>().key({pk: customer.id }).exec();
+```
+
+
+### Execute a transaction
+
+The builder can also return the transactional item to be used inside a transaction.
+
+```tsx title="execute a transaction"
+
+const customerPutTx = store.put().item<CustomerItem>({name: 'declan'}).tx();
+
+await transactWriteItem(customerPutTx);
+```
+

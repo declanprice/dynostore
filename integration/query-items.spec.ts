@@ -2,6 +2,7 @@ import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
 import { Store } from '../src/store'
 import { marshall } from '@aws-sdk/util-dynamodb'
 import { wait } from './wait'
+import { gt } from '../src'
 
 const client = new DynamoDBClient()
 
@@ -22,5 +23,7 @@ describe('QueryItems', () => {
     name: `test-${index}`
   }))
 
-  it('should return items successfully', () => {})
+  it('should return items successfully', () => {
+    store.query().sk(gt('sk', 2))
+  })
 })

@@ -1,0 +1,30 @@
+---
+sidebar_position: 3
+---
+
+# PutItem
+
+How to put an item.
+
+### Put an item.
+
+```tsx
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+await store.put<CustomerItem>().item({ id: customer.id }).exec()
+```
+
+
+### Put an item with a transaction.
+```tsx
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+const customer = store.put<CustomerItem>().item({ id: customer.id }).tx()
+
+await transactWriteItems(customer);
+```
+

@@ -1,0 +1,30 @@
+---
+sidebar_position: 2
+---
+
+# GetItem
+
+How to get an item.
+
+## Usage
+
+### Get item
+
+```tsx
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+const customer = await store.get<CustomerItem>().key({ id: customer.id }).exec()
+```
+
+
+### Get item with projection
+
+```tsx
+import { Store } from '@declanprice/noxa'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+const customer = await store.get<CustomerItem>().key({ id: customer.id }).project('id,firstName,lastName').exec()
+```
