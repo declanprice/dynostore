@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[878],{1220:e=>{e.exports=JSON.parse('{"title":"Guide","description":"learn the dynostore api","slug":"/category/guide","permalink":"/docs/category/guide","navigation":{"previous":{"title":"Getting Started","permalink":"/docs/getting-started"},"next":{"title":"Store","permalink":"/docs/guide/store"}}}')}}]);
