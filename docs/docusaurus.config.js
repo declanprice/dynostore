@@ -20,7 +20,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'declanprice.github.io', // Usually your GitHub org/user name.
+  organizationName: 'declanprice', // Usually your GitHub org/user name.
   projectName: 'dynostore', // Usually your repo name.
 
   onBrokenLinks: 'throw',
