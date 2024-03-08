@@ -16,10 +16,7 @@ export type QueryResponse<Item> = {
 
 type QueryBuilderOptions = {
   indexName?: string
-  pk?: {
-    path: string
-    value: string | number
-  }
+  pkExpression?: string
   sk?: {
     condition: Expression
   }
@@ -40,10 +37,9 @@ export class QueryItemsBuilder<Item> {
   ) {}
 
   pk(path: string, value: string | number): QueryItemsBuilder<Item> {
-    this.options.pk = {
-      path,
-      value
-    }
+    const pkName = this.attributes.addName(path);
+    const pkValue = this.attributes.addValue(value);
+    this.options.pkExpression = `${pkName} = ${pkValue}`
     return this
   }
 
@@ -85,21 +81,21 @@ export class QueryItemsBuilder<Item> {
   }
 
   async exec(): Promise<QueryResponse<Item>> {
-    const { pk, sk, projection, filter, limit, startAt, sort } = this.options
+    const { pkExpression, sk, projection, filter, limit, startAt, sort } = this.options
 
-    if (!pk) throw new Error('[invalid options] - pk is missing')
+    if (!pkExpression) throw new Error('[invalid options] - pk is missing')
 
     const response = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
         IndexName: this.options.indexName,
         ProjectionExpression: projection,
-        KeyConditionExpression: sk?.condition.expression,
+        KeyConditionExpression: sk ? `${this.options.pkExpression} AND ${sk?.condition.expression}` : this.options.pkExpression,
         FilterExpression: filter?.expression,
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         Limit: limit,
-        ExclusiveStartKey: marshall(startAt, { removeUndefinedValues: true }),
+        ExclusiveStartKey: startAt ? marshall(startAt, { removeUndefinedValues: true }): undefined,
         ScanIndexForward: sort !== 'desc'
       })
     )
