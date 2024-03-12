@@ -2,7 +2,7 @@ import { ConditionalCheckFailedException, DynamoDBClient } from '@aws-sdk/client
 import { Store } from '../src/store'
 import { wait } from './wait'
 import { notExists } from '../src/expressions/condition/notExists'
-import { eq, increment, set } from '../src'
+import { and, eq, exists, increment, set } from '../src'
 
 const client = new DynamoDBClient()
 
@@ -35,6 +35,15 @@ describe.only('UpdateItem', () => {
       .update()
       .key({ pk: customer.pk, sk: customer.sk })
       .update(set('firstName', 'changed'), set('lastName', 'changed-last'), increment('version', 1))
+      .exec()
+  })
+
+  it('should update item successfully with conditions', async () => {
+    await store
+      .update()
+      .key({ pk: customer.pk, sk: customer.sk })
+      .update(set('firstName', 'changed'), set('lastName', 'changed-last'), increment('version', 1))
+      .condition(exists('sk'), and(), eq('name', 'test'))
       .exec()
   })
 })
