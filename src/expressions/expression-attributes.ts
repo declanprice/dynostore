@@ -6,7 +6,8 @@ export class ExpressionAttributes {
   expressionAttributeValues: { [key: string]: AttributeValue } | undefined = undefined
   private expressionCounter = 0
 
-  constructor() {}
+  constructor() {
+  }
 
   addName(name: string): string {
     const exName = `#${this.expressionCounter}`

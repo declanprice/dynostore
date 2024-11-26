@@ -145,8 +145,39 @@ export const createConditionExpression = (
         expression += `attribute_type(${typeName}, ${typeValue})`
         break
       case 'size':
-        const sizeName = attributes.addName(condition.path)
-        expression += `size(${sizeName})`
+        const sizeName = attributes.addName(condition.condition.path)
+
+        let sizeValue
+
+        switch (condition.condition.type) {
+          case 'eq':
+            sizeValue = attributes.addValue(condition.condition.value)
+            expression += `size(${sizeName}) = ${sizeValue}`
+            break
+          case 'lt':
+            sizeValue = attributes.addValue(condition.condition.value)
+            expression += `size(${sizeName}) < ${sizeValue}`
+            break
+          case 'lte':
+            sizeValue = attributes.addValue(condition.condition.value)
+            expression += `size(${sizeName}) <= ${sizeValue}`
+            break
+          case 'gt':
+            sizeValue = attributes.addValue(condition.condition.value)
+            expression += `size(${sizeName}) > ${sizeValue}`
+            break
+          case 'gte':
+            sizeValue = attributes.addValue(condition.condition.value)
+            expression += `size(${sizeName}) >= ${sizeValue}`
+            break
+          case 'between':
+            let sizeValue1 = attributes.addValue(condition.condition.valueOne)
+            let sizeValue2 = attributes.addValue(condition.condition.valueTwo)
+            expression += `size(${sizeName}) between ${sizeValue1} and ${sizeValue2}`
+            break
+          default:
+            throw new Error(`invalid condition expression for size condition`)
+        }
         break
       default:
         break

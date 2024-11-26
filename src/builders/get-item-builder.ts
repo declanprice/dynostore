@@ -37,7 +37,7 @@ export class GetItemBuilder<Item> {
   async exec(): Promise<Item | null> {
     const { key, consistent, projection } = this.options
 
-    if (!key) throw new Error('[invalid options] - key is missing')
+    if (!key) throw new Error('[InvalidOptions] - key is missing')
 
     const response = await this.client.send(
       new GetItemCommand({
@@ -56,7 +56,7 @@ export class GetItemBuilder<Item> {
   tx(): TransactGetItem {
     const { key, projection } = this.options
 
-    if (!key) throw new Error('[invalid options] - key is missing')
+    if (!key) throw new Error('[InvalidOptions] - key is missing')
 
     return {
       Get: {

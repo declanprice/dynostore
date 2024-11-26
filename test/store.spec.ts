@@ -15,7 +15,7 @@ describe('TransactWriteItems', () => {
     testClient.on(TransactWriteItemsCommand).resolves({})
   })
 
-  it('transactItems() should submit TransactWriteItemsCommand succesfully', async () => {
+  it('transactItems() should submit TransactWriteItemsCommand successfully', async () => {
     const deleteItemTx = testStore.delete().key({
       pk: 'item',
       sk: '1'

@@ -197,12 +197,20 @@ describe('ConditionExpression', () => {
   })
 
   it('size() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, undefined, size('year'))
-    expect(expression.expression).toEqual('size(#0)')
+    const expression = createConditionExpression(attributes, undefined, size(eq('year', 2)), and(), eq('age', 20))
+    expect(expression.expression).toEqual('size(#0) = :1 and #2 = :3')
     expect(expression.expressionAttributeNames).toEqual({
-      '#0': 'year'
+      '#0': 'year',
+      '#2': 'age'
     })
-    expect(expression.expressionAttributeValues).toEqual(undefined)
+    expect(expression.expressionAttributeValues).toEqual({
+      ':1': {
+        'N': '2'
+      },
+      ':3': {
+        'N': '20'
+      }
+    })
   })
 
   it('and() - should return expected expression', () => {

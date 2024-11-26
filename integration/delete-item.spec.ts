@@ -1,5 +1,4 @@
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
-import { marshall } from '@aws-sdk/util-dynamodb'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { Store } from '../src/store'
 import { wait } from './wait'
 
@@ -13,31 +12,33 @@ type CustomerItem = {
   pk: string
   sk: string
   name: string
+  version: number
 }
 
-describe('DeleteItem', () => {
+describe.only('DeleteItem', () => {
   const customer: CustomerItem = {
     pk: '1',
     sk: 'customer',
-    name: 'test'
+    name: 'test',
+    version: 0
   }
 
-  beforeAll(async () => {
-    // await client.send(
-    //   new PutItemCommand({
-    //     TableName: tableName,
-    //     Item: marshall(customer)
-    //   })
-    // )
-    //
-    // await wait(1000)
+  beforeEach(async () => {
+    await store.put().item(customer).exec()
+
+    await wait(100)
   })
 
-  it('should return item successfully', async () => {
+  it('should delete item successfully', async () => {
+    const key = { pk: customer.pk, sk: customer.sk }
 
-  })
+    await store
+      .delete()
+      .key(key)
+      .exec()
 
-  it('should return item successfully with consistent', async () => {
+    const item = await store.get<any>().key(key).exec()
 
+    expect(item).toBeNull()
   })
 })

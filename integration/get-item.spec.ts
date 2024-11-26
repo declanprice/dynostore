@@ -1,6 +1,6 @@
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { Store } from '../src'
 import { marshall } from '@aws-sdk/util-dynamodb'
-import { Store } from '../src/store'
 import { wait } from './wait'
 
 const client = new DynamoDBClient()
@@ -35,6 +35,7 @@ describe('GetItem', () => {
 
   it('should return item successfully', async () => {
     const item = await store.get<CustomerItem>().key({ pk: customer.pk, sk: customer.sk }).exec()
+
     if (!item) throw new Error('item not found')
     expect(item).toBeTruthy()
     expect(item.pk).toEqual(customer.pk)

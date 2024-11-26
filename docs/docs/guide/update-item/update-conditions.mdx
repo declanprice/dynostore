@@ -1,0 +1,64 @@
+---
+sidebar_position: 2
+---
+
+# Update Conditions
+
+### set(path, value)
+
+Set attribute value.
+
+```tsx
+item.update(set('name', 'declan'))
+```
+
+### setIfNotExists(path, value)
+
+Only set attribute value if it does not already exist.
+
+```tsx
+item.update(setIfNotExists('name', 'declan'))
+```
+
+### add(path, value)
+
+Add value to attribute.
+
+```tsx
+item.update(add('hobbies', 'snowboarding'))
+```
+
+### remove(path, value)
+
+Remove value from attribute.
+
+```tsx
+item.update(remove('hobbies', 'snowboarding'))
+```
+
+### increment(path, value)
+
+Increment an attribute value by number.
+
+```tsx
+item.update(increment(age, 1))
+```
+
+### decrement(path, value)
+
+Decrement an attribute value by number.
+
+```tsx
+item.update(decrement(age, 1))
+```
+
+### delete(path, value)
+
+Delete an attribute from the item.
+
+```tsx
+item.delete('hobbies')
+```
+
+
+

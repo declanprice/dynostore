@@ -30,7 +30,6 @@ export class DeleteItemBuilder<Item> {
 
   condition(...conditions: ConditionExpression[]): DeleteItemBuilder<Item> {
     this.options.conditionExpression = createConditionExpression(this.attributes, this.options.conditionExpression, ...conditions)
-
     return this
   }
 
@@ -42,7 +41,7 @@ export class DeleteItemBuilder<Item> {
   async exec(): Promise<Item | null> {
     const { key, conditionExpression, returnOld } = this.options
 
-    if (!key) throw new Error('[invalid options] - key is missing')
+    if (!key) throw new Error('[InvalidOptions] - key is missing')
 
     const result = await this.client.send(
       new DeleteItemCommand({
@@ -64,7 +63,7 @@ export class DeleteItemBuilder<Item> {
   tx(): TransactWriteItem {
     const { key, conditionExpression, returnOld } = this.options
 
-    if (!key) throw new Error('[invalid options] - key is missing')
+    if (!key) throw new Error('[InvalidOptions] - key is missing')
 
     return {
       Delete: {

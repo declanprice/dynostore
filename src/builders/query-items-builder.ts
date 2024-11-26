@@ -9,14 +9,15 @@ import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
 import { ExpressionAttributes } from '../expressions'
 
+export type QueryResponse<Item> = {
+  items: Item[]
+  lastKey: any | null
+}
+
 type QueryBuilderOptions = {
   indexName?: string
-  pk?: {
-    path: string
-    value: string | number
-  }
+  pkExpression?: string
   sk?: {
-    path: string
     conditionExpression: Expression
   }
   projection?: string
@@ -37,16 +38,14 @@ export class QueryItemsBuilder<Item> {
   }
 
   pk(path: string, value: string | number): QueryItemsBuilder<Item> {
-    this.options.pk = {
-      path,
-      value
-    }
+    const pkName = this.attributes.addName(path);
+    const pkValue = this.attributes.addValue(value);
+    this.options.pkExpression = `${pkName} = ${pkValue}`
     return this
   }
 
-  sk(path: string, condition: KeyConditionExpression): QueryItemsBuilder<Item> {
+  sk(condition: KeyConditionExpression): QueryItemsBuilder<Item> {
     this.options.sk = {
-      path,
       conditionExpression: createConditionExpression(this.attributes, undefined, condition)
     }
     return this
@@ -82,22 +81,22 @@ export class QueryItemsBuilder<Item> {
     return this
   }
 
-  async exec(): Promise<{ items: Item[]; lastKey: ItemKey | null }> {
-    const { pk, sk, projection, filterExpression, limit, startAt, sort } = this.options
+  async exec(): Promise<QueryResponse<Item>> {
+    const { pkExpression, sk, projection, filterExpression, limit, startAt, sort } = this.options
 
-    if (!pk) throw new Error('[invalid options] - pk is missing')
+    if (!pkExpression) throw new Error('[invalid options] - pk is missing')
 
     const response = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
         IndexName: this.options.indexName,
         ProjectionExpression: projection,
-        KeyConditionExpression: sk?.conditionExpression.expression,
+        KeyConditionExpression: sk ? `${this.options.pkExpression} AND ${sk?.conditionExpression.expression}` : this.options.pkExpression,
         FilterExpression: filterExpression?.expression,
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         Limit: limit,
-        ExclusiveStartKey: marshall(startAt, { removeUndefinedValues: true }),
+        ExclusiveStartKey: startAt ? marshall(startAt, { removeUndefinedValues: true }): undefined,
         ScanIndexForward: sort !== 'desc'
       })
     )
