@@ -17,10 +17,10 @@ type QueryBuilderOptions = {
   }
   sk?: {
     path: string
-    condition: Expression
+    conditionExpression: Expression
   }
   projection?: string
-  filter?: Expression
+  filterExpression?: Expression
   limit?: number
   startAt?: ItemKey
   sort?: 'asc' | 'desc'
@@ -33,7 +33,8 @@ export class QueryItemsBuilder<Item> {
   constructor(
     private readonly tableName: string,
     private readonly client: DynamoDBClient
-  ) {}
+  ) {
+  }
 
   pk(path: string, value: string | number): QueryItemsBuilder<Item> {
     this.options.pk = {
@@ -46,7 +47,7 @@ export class QueryItemsBuilder<Item> {
   sk(path: string, condition: KeyConditionExpression): QueryItemsBuilder<Item> {
     this.options.sk = {
       path,
-      condition: createConditionExpression(this.attributes, condition)
+      conditionExpression: createConditionExpression(this.attributes, undefined, condition)
     }
     return this
   }
@@ -57,7 +58,7 @@ export class QueryItemsBuilder<Item> {
   }
 
   filter(...conditions: ConditionExpression[]): QueryItemsBuilder<Item> {
-    this.options.filter = createConditionExpression(this.attributes, ...conditions)
+    this.options.filterExpression = createConditionExpression(this.attributes, this.options.filterExpression, ...conditions)
     return this
   }
 
@@ -82,7 +83,7 @@ export class QueryItemsBuilder<Item> {
   }
 
   async exec(): Promise<{ items: Item[]; lastKey: ItemKey | null }> {
-    const { pk, sk, projection, filter, limit, startAt, sort } = this.options
+    const { pk, sk, projection, filterExpression, limit, startAt, sort } = this.options
 
     if (!pk) throw new Error('[invalid options] - pk is missing')
 
@@ -91,8 +92,8 @@ export class QueryItemsBuilder<Item> {
         TableName: this.tableName,
         IndexName: this.options.indexName,
         ProjectionExpression: projection,
-        KeyConditionExpression: sk?.condition.expression,
-        FilterExpression: filter?.expression,
+        KeyConditionExpression: sk?.conditionExpression.expression,
+        FilterExpression: filterExpression?.expression,
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         Limit: limit,

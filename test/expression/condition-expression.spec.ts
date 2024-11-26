@@ -1,23 +1,23 @@
-import { createConditionExpression } from '../src/expressions/condition/condition-expression'
-import { eq } from '../src/expressions/condition/eq'
-import { and } from '../src/expressions/condition/and'
-import { or } from '../src/expressions/condition/or'
-import { group } from '../src/expressions/condition/group'
-import { not } from '../src/expressions/condition/not'
-import { gte } from '../src/expressions/condition/gte'
-import { gt } from '../src/expressions/condition/gt'
-import { lt } from '../src/expressions/condition/lt'
-import { lte } from '../src/expressions/condition/lte'
-import { beginsWith } from '../src/expressions/condition/beginsWith'
-import { exists } from '../src/expressions/condition/exists'
-import { notExists } from '../src/expressions/condition/notExists'
-import { between } from '../src/expressions/condition/between'
-import { contains } from '../src/expressions/condition/contains'
-import { anyOf } from '../src/expressions/condition/anyOf'
-import { type } from '../src/expressions/condition/type'
-import { size } from '../src/expressions/condition/size'
-import { notEq } from '../src/expressions/condition/notEq'
-import { ExpressionAttributes } from '../src'
+import { createConditionExpression } from '../../src/expressions/condition/condition-expression'
+import { eq } from '../../src/expressions/condition/eq'
+import { and } from '../../src/expressions/condition/and'
+import { or } from '../../src/expressions/condition/or'
+import { group } from '../../src/expressions/condition/group'
+import { not } from '../../src/expressions/condition/not'
+import { gte } from '../../src/expressions/condition/gte'
+import { gt } from '../../src/expressions/condition/gt'
+import { lt } from '../../src/expressions/condition/lt'
+import { lte } from '../../src/expressions/condition/lte'
+import { beginsWith } from '../../src/expressions/condition/beginsWith'
+import { exists } from '../../src/expressions/condition/exists'
+import { notExists } from '../../src/expressions/condition/notExists'
+import { between } from '../../src/expressions/condition/between'
+import { contains } from '../../src/expressions/condition/contains'
+import { anyOf } from '../../src/expressions/condition/anyOf'
+import { type } from '../../src/expressions/condition/type'
+import { size } from '../../src/expressions/condition/size'
+import { notEq } from '../../src/expressions/condition/notEq'
+import { ExpressionAttributes } from '../../src'
 
 describe('ConditionExpression', () => {
   let attributes: ExpressionAttributes
@@ -27,7 +27,7 @@ describe('ConditionExpression', () => {
   })
 
   it('eq() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, eq('name', 'declan'))
+    const expression = createConditionExpression(attributes, undefined, eq('name', 'declan'))
     expect(expression.expression).toEqual('#0 = :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
@@ -40,7 +40,7 @@ describe('ConditionExpression', () => {
   })
 
   it('notEq() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, notEq('name', 'declan'))
+    const expression = createConditionExpression(attributes, undefined, notEq('name', 'declan'))
     expect(expression.expression).toEqual('#0 <> :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
@@ -53,7 +53,7 @@ describe('ConditionExpression', () => {
   })
 
   it('gt() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, gt('age', 25))
+    const expression = createConditionExpression(attributes, undefined, gt('age', 25))
     expect(expression.expression).toEqual('#0 > :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'age'
@@ -66,7 +66,7 @@ describe('ConditionExpression', () => {
   })
 
   it('gte() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, gte('age', 25))
+    const expression = createConditionExpression(attributes, undefined, gte('age', 25))
     expect(expression.expression).toEqual('#0 >= :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'age'
@@ -79,7 +79,7 @@ describe('ConditionExpression', () => {
   })
 
   it('lt() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, lt('age', 25))
+    const expression = createConditionExpression(attributes, undefined, lt('age', 25))
     expect(expression.expression).toEqual('#0 < :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'age'
@@ -92,7 +92,7 @@ describe('ConditionExpression', () => {
   })
 
   it('lte() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, lte('age', 25))
+    const expression = createConditionExpression(attributes, undefined, lte('age', 25))
     expect(expression.expression).toEqual('#0 <= :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'age'
@@ -105,7 +105,7 @@ describe('ConditionExpression', () => {
   })
 
   it('beginsWith() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, beginsWith('name', 'dec'))
+    const expression = createConditionExpression(attributes, undefined, beginsWith('name', 'dec'))
     expect(expression.expression).toEqual('begins_with(#0, :1)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
@@ -118,7 +118,7 @@ describe('ConditionExpression', () => {
   })
 
   it('between() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, between('year', '2018', '2020'))
+    const expression = createConditionExpression(attributes, undefined, between('year', '2018', '2020'))
     expect(expression.expression).toEqual('#0 between :1 and :2')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'year'
@@ -134,7 +134,7 @@ describe('ConditionExpression', () => {
   })
 
   it('exists() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, exists('name'))
+    const expression = createConditionExpression(attributes, undefined, exists('name'))
     expect(expression.expression).toEqual('attribute_exists(#0)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
@@ -143,7 +143,7 @@ describe('ConditionExpression', () => {
   })
 
   it('notExists() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, notExists('name'))
+    const expression = createConditionExpression(attributes, undefined, notExists('name'))
     expect(expression.expression).toEqual('attribute_not_exists(#0)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
@@ -152,7 +152,7 @@ describe('ConditionExpression', () => {
   })
 
   it('contains() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, contains('year', '2018'))
+    const expression = createConditionExpression(attributes, undefined, contains('year', '2018'))
     expect(expression.expression).toEqual('contains(#0, :1)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'year'
@@ -165,7 +165,7 @@ describe('ConditionExpression', () => {
   })
 
   it('anyOf() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, anyOf('year', ['2018', '2019', '2020']))
+    const expression = createConditionExpression(attributes, undefined, anyOf('year', ['2018', '2019', '2020']))
     expect(expression.expression).toEqual('#0 in (:1,:2,:3)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'year'
@@ -184,7 +184,7 @@ describe('ConditionExpression', () => {
   })
 
   it('type() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, type('year', 'S'))
+    const expression = createConditionExpression(attributes, undefined, type('year', 'S'))
     expect(expression.expression).toEqual('attribute_type(#0, :1)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'year'
@@ -197,7 +197,7 @@ describe('ConditionExpression', () => {
   })
 
   it('size() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, size('year'))
+    const expression = createConditionExpression(attributes, undefined, size('year'))
     expect(expression.expression).toEqual('size(#0)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'year'
@@ -206,7 +206,7 @@ describe('ConditionExpression', () => {
   })
 
   it('and() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, eq('name', 'declan'), and(), eq('age', 26))
+    const expression = createConditionExpression(attributes, undefined, eq('name', 'declan'), and(), eq('age', 26))
     expect(expression.expression).toEqual('#0 = :1 and #2 = :3')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name',
@@ -223,7 +223,7 @@ describe('ConditionExpression', () => {
   })
 
   it('or() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, eq('name', 'declan'), or(), eq('age', 26))
+    const expression = createConditionExpression(attributes, undefined, eq('name', 'declan'), or(), eq('age', 26))
     expect(expression.expression).toEqual('#0 = :1 or #2 = :3')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name',
@@ -240,7 +240,7 @@ describe('ConditionExpression', () => {
   })
 
   it('not() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, not(eq('name', 'declan')))
+    const expression = createConditionExpression(attributes, undefined, not(eq('name', 'declan')))
     expect(expression.expression).toEqual('not #0 = :1')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name'
@@ -253,7 +253,7 @@ describe('ConditionExpression', () => {
   })
 
   it('group() - should return expected expression', () => {
-    const expression = createConditionExpression(attributes, group(eq('name', 'declan'), or(), eq('age', 26)))
+    const expression = createConditionExpression(attributes, undefined, group(eq('name', 'declan'), or(), eq('age', 26)))
     expect(expression.expression).toEqual('(#0 = :1 or #2 = :3)')
     expect(expression.expressionAttributeNames).toEqual({
       '#0': 'name',
@@ -272,6 +272,7 @@ describe('ConditionExpression', () => {
   it('should return expected expression with complex conditions', () => {
     const expression = createConditionExpression(
       attributes,
+      undefined,
       group(eq('name', 'declan'), or(), eq('age', 26)),
       or(),
       group(lt('age', 25), and(), gt('age', 15))
@@ -296,6 +297,34 @@ describe('ConditionExpression', () => {
       },
       ':7': {
         N: '15'
+      }
+    })
+  })
+
+  it('should consider existing expression and return expected expression ', () => {
+    const expression = createConditionExpression(attributes, undefined, eq('age', 26))
+    expect(expression.expression).toEqual('#0 = :1')
+    expect(expression.expressionAttributeNames).toEqual({
+      '#0': 'age'
+    })
+    expect(expression.expressionAttributeValues).toEqual({
+      ':1': {
+        N: '26'
+      }
+    })
+
+    const newExpression = createConditionExpression(attributes, expression, eq('name', 'declan'))
+    expect(newExpression.expression).toEqual('#0 = :1 and #2 = :3')
+    expect(newExpression.expressionAttributeNames).toEqual({
+      '#0': 'age',
+      '#2': 'name'
+    })
+    expect(newExpression.expressionAttributeValues).toEqual({
+      ':1': {
+        N: '26'
+      },
+      ':3': {
+        S: 'declan'
       }
     })
   })

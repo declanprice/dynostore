@@ -19,6 +19,7 @@ export type UpdateExpression =
 
 export const createUpdateExpression = (
   attributes: ExpressionAttributes,
+  existingExpression?: Expression,
   ...updates: UpdateExpression[]
 ): Expression => {
   let setExpressions: string[] = []
@@ -75,7 +76,7 @@ export const createUpdateExpression = (
   if (deleteExpressions.length) joinedExpressions.push(`DELETE ${deleteExpressions.join(',')}`)
 
   return {
-    expression: joinedExpressions.join(' ').trim(),
+    expression: existingExpression ? existingExpression.expression + ',' + joinedExpressions.join(' ').trim() : joinedExpressions.join(' ').trim(),
     expressionAttributeNames: attributes.expressionAttributeNames,
     expressionAttributeValues: attributes.expressionAttributeValues
   }

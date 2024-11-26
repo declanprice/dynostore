@@ -17,7 +17,8 @@ export class PutItemBuilder<Item> {
   constructor(
     private readonly tableName: string,
     private readonly client: DynamoDBClient
-  ) {}
+  ) {
+  }
 
   item(item: Item): PutItemBuilder<Item> {
     this.options.item = item
@@ -25,7 +26,8 @@ export class PutItemBuilder<Item> {
   }
 
   condition(...conditions: ConditionExpression[]): PutItemBuilder<Item> {
-    this.options.conditionExpression = createConditionExpression(this.attributes, ...conditions)
+    this.options.conditionExpression = createConditionExpression(this.attributes, this.options.conditionExpression, ...conditions)
+
     return this
   }
 

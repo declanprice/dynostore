@@ -7,13 +7,14 @@ import { ExpressionAttributes } from '../expressions'
 
 type DeleteBuilderOptions = {
   key?: ItemKey
-  condition?: Expression
+  conditionExpression?: Expression
   returnOld?: boolean
 }
 
 export class DeleteItemBuilder<Item> {
   private readonly options: DeleteBuilderOptions
   private readonly attributes = new ExpressionAttributes()
+
   constructor(
     private readonly tableName: string,
     private readonly client: DynamoDBClient,
@@ -28,7 +29,8 @@ export class DeleteItemBuilder<Item> {
   }
 
   condition(...conditions: ConditionExpression[]): DeleteItemBuilder<Item> {
-    this.options.condition = createConditionExpression(this.attributes, ...conditions)
+    this.options.conditionExpression = createConditionExpression(this.attributes, this.options.conditionExpression, ...conditions)
+
     return this
   }
 
@@ -38,7 +40,7 @@ export class DeleteItemBuilder<Item> {
   }
 
   async exec(): Promise<Item | null> {
-    const { key, condition, returnOld } = this.options
+    const { key, conditionExpression, returnOld } = this.options
 
     if (!key) throw new Error('[invalid options] - key is missing')
 
@@ -46,7 +48,7 @@ export class DeleteItemBuilder<Item> {
       new DeleteItemCommand({
         TableName: this.tableName,
         Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
-        ConditionExpression: condition?.expression,
+        ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         ReturnValues: returnOld ? 'ALL_OLD' : 'NONE',
@@ -60,7 +62,7 @@ export class DeleteItemBuilder<Item> {
   }
 
   tx(): TransactWriteItem {
-    const { key, condition, returnOld } = this.options
+    const { key, conditionExpression, returnOld } = this.options
 
     if (!key) throw new Error('[invalid options] - key is missing')
 
@@ -68,7 +70,7 @@ export class DeleteItemBuilder<Item> {
       Delete: {
         TableName: this.tableName,
         Key: marshall(key, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
-        ConditionExpression: condition?.expression,
+        ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         ReturnValuesOnConditionCheckFailure: returnOld ? 'ALL_OLD' : 'NONE'

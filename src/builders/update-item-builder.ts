@@ -20,7 +20,8 @@ export class UpdateItemBuilder<Item> {
   constructor(
     private readonly tableName: string,
     private readonly client: DynamoDBClient
-  ) {}
+  ) {
+  }
 
   key(key: ItemKey): UpdateItemBuilder<Item> {
     this.options.key = key
@@ -28,12 +29,12 @@ export class UpdateItemBuilder<Item> {
   }
 
   condition(...conditions: ConditionExpression[]): UpdateItemBuilder<Item> {
-    this.options.conditionExpression = createConditionExpression(this.attributes, ...conditions)
+    this.options.conditionExpression = createConditionExpression(this.attributes, this.options.conditionExpression, ...conditions)
     return this
   }
 
   update(...updates: UpdateExpression[]): UpdateItemBuilder<Item> {
-    this.options.updateExpression = createUpdateExpression(this.attributes, ...updates)
+    this.options.updateExpression = createUpdateExpression(this.attributes, this.options.updateExpression, ...updates)
     return this
   }
 

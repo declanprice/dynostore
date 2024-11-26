@@ -1,6 +1,6 @@
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
-import { Store } from '../src/store'
 import { marshall } from '@aws-sdk/util-dynamodb'
+import { Store } from '../src/store'
 import { wait } from './wait'
 
 const client = new DynamoDBClient()

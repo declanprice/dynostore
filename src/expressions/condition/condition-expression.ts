@@ -50,9 +50,10 @@ export type ConditionExpression =
 
 export const createConditionExpression = (
   attributes: ExpressionAttributes,
+  existingExpression?: Expression,
   ...conditions: ConditionExpression[]
 ): Expression => {
-  let expression = ''
+  let expression = existingExpression ? `${existingExpression.expression} and ` : ''
 
   const applyCondition = (condition: ConditionExpression) => {
     switch (condition.type) {
@@ -137,7 +138,6 @@ export const createConditionExpression = (
         }
 
         expression += `${anyOfName} in (${anyOfValues.join(',')})`
-
         break
       case 'type':
         const typeName = attributes.addName(condition.path)

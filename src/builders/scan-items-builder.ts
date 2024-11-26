@@ -8,7 +8,7 @@ import { ExpressionAttributes } from '../expressions'
 type ScanItemsBuilderOptions<Item> = {
   indexName?: string
   projection?: string
-  filter?: Expression
+  filterExpression?: Expression
   limit?: number
   startAt?: ItemKey
   sort?: 'asc' | 'desc'
@@ -26,7 +26,8 @@ export class ScanItemsBuilder<Item> {
   constructor(
     readonly tableName: string,
     readonly client: DynamoDBClient
-  ) {}
+  ) {
+  }
 
   using(indexName: string): ScanItemsBuilder<Item> {
     this.options.indexName = indexName
@@ -34,7 +35,7 @@ export class ScanItemsBuilder<Item> {
   }
 
   filter(...conditions: ConditionExpression[]): ScanItemsBuilder<Item> {
-    this.options.filter = createConditionExpression(this.attributes, ...conditions)
+    this.options.filterExpression = createConditionExpression(this.attributes, this.options.filterExpression, ...conditions)
     return this
   }
 
@@ -67,7 +68,7 @@ export class ScanItemsBuilder<Item> {
   }
 
   async exec<ItemType>(): Promise<{ items: ItemType[]; lastKey: ItemKey | null }> {
-    const { indexName, consistent, projection, filter, limit, startAt, parallel } = this.options
+    const { indexName, consistent, projection, filterExpression, limit, startAt, parallel } = this.options
 
     const response = await this.client.send(
       new ScanCommand({
@@ -75,7 +76,7 @@ export class ScanItemsBuilder<Item> {
         IndexName: indexName,
         ConsistentRead: consistent,
         ProjectionExpression: projection,
-        FilterExpression: filter?.expression,
+        FilterExpression: filterExpression?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         Limit: limit,

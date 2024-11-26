@@ -1,7 +1,7 @@
 import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb'
 import { mockClient } from 'aws-sdk-client-mock'
 import 'aws-sdk-client-mock-jest'
-import { GetItemBuilder } from '../src/builders/get-item-builder'
+import { GetItemBuilder } from '../../src'
 
 const testTableName = 'test_table'
 const testClient: any = mockClient(new DynamoDBClient())
@@ -62,13 +62,13 @@ describe('GetItemBuilder', () => {
 
 describe('GetItemBuilder - errors', () => {
 
-    it('exec should throw error if key is missing', async () => {
-        const builder = new GetItemBuilder(testTableName, testClient);
+  it('exec should throw error if key is missing', async () => {
+    const builder = new GetItemBuilder(testTableName, testClient)
 
-        await expect(async () => {
-            await builder.exec();
-        }).rejects.toThrow('[invalid options] - key is missing')
-    })
+    await expect(async () => {
+      await builder.exec()
+    }).rejects.toThrow('[invalid options] - key is missing')
+  })
 
   it('tx() should throw error if key is missing', () => {
     const builder = new GetItemBuilder(testTableName, testClient)

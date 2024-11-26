@@ -40,4 +40,7 @@ describe('PutItemBuilder', () => {
       }
     })
   })
+
+  it('should be able to stack conditions', async () => {
+  })
 })
