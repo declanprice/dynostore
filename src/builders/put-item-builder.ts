@@ -1,4 +1,4 @@
-import { DynamoDBClient, PutItemCommand, TransactWriteItem } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, PutItemCommand, TransactWriteItem, ReturnValue } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 import { createConditionExpression, ConditionExpression } from '../expressions/condition/condition-expression'
 import { Expression } from '../expressions/expression'
@@ -7,7 +7,7 @@ import { ExpressionAttributes } from '../expressions'
 type PutBuilderOptions<Item> = {
   item?: Item
   conditionExpression?: Expression
-  returnOld?: boolean
+  returnValue?: ReturnValue
 }
 
 export class PutItemBuilder<Item> {
@@ -31,15 +31,15 @@ export class PutItemBuilder<Item> {
     return this
   }
 
-  returnOld(): PutItemBuilder<Item> {
-    this.options.returnOld = true
+  returnValue(value: ReturnValue): PutItemBuilder<Item> {
+    this.options.returnValue = value
     return this
   }
 
   async exec(): Promise<Item | null> {
-    const { item, conditionExpression, returnOld } = this.options
+    const { item, conditionExpression, returnValue } = this.options
 
-    if (!item) throw new Error('[invalid options] - item is missing')
+    if (!item) throw new Error('[InvalidOptions] - item is missing')
 
     const result = await this.client.send(
       new PutItemCommand({
@@ -48,7 +48,7 @@ export class PutItemBuilder<Item> {
         ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
-        ReturnValues: returnOld === true ? 'ALL_OLD' : 'NONE'
+        ReturnValues: returnValue
       })
     )
 
@@ -58,9 +58,13 @@ export class PutItemBuilder<Item> {
   }
 
   tx(): TransactWriteItem {
-    const { item, conditionExpression, returnOld } = this.options
+    const { item, conditionExpression, returnValue } = this.options
 
-    if (!item) throw new Error('[invalid options] - item is missing')
+    if (!item) throw new Error('[InvalidOptions] - item is missing')
+
+    if (returnValue && returnValue != 'ALL_OLD' && returnValue != 'NONE') {
+      throw new Error('[InvalidOptions] - only ALL_OLD or NONE returnValue is supported for transactions')
+    }
 
     return {
       Put: {
@@ -69,8 +73,8 @@ export class PutItemBuilder<Item> {
         ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
-        ReturnValuesOnConditionCheckFailure: returnOld === true ? 'ALL_OLD' : 'NONE'
-      }
+        ReturnValuesOnConditionCheckFailure: returnValue
+      },
     }
   }
 }

@@ -1,7 +1,7 @@
 import { DeleteItemCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { mockClient } from 'aws-sdk-client-mock'
 import 'aws-sdk-client-mock-jest'
-import { DeleteItemBuilder, eq } from '../../src'
+import { DeleteItemBuilder, eq, or } from '../../src'
 
 const testClient = mockClient(new DynamoDBClient())
 
@@ -78,8 +78,7 @@ describe('DeleteItemBuilder', () => {
         pk: 'item',
         sk: '1'
       })
-        .condition(eq('name', 'declan'))
-        .condition(eq('age', 20))
+        .condition(eq('name', 'declan'), or(), eq('age', 20))
         .exec()
 
       expect(testClient).toHaveReceivedCommandWith(DeleteItemCommand, {
@@ -91,6 +90,46 @@ describe('DeleteItemBuilder', () => {
             S: '1'
           }
         },
+        ConditionExpression: '#0 = :1 or #2 = :3',
+        ExpressionAttributeNames: {
+          '#0': 'name',
+          '#2': 'age'
+        },
+        ExpressionAttributeValues: {
+          ':1': {
+            S: 'declan'
+          },
+          ':3': {
+            N: '20'
+          }
+        },
+        ReturnValues: 'NONE'
+      })
+    })
+
+    it('should send DeleteItemCommand with configured stacked conditions', async () => {
+      const builder = new DeleteItemBuilder('TestTable', testClient as any)
+
+      const query = builder.key({
+        pk: 'item',
+        sk: '1'
+      })
+        .condition(eq('name', 'declan'))
+
+      query.condition(eq('age', 20))
+
+      await query.exec()
+
+      expect(testClient).toHaveReceivedCommandWith(DeleteItemCommand, {
+        Key: {
+          pk: {
+            S: 'item'
+          },
+          sk: {
+            S: '1'
+          }
+        },
+        ConditionExpression: '#0 = :1 and #2 = :3',
         ExpressionAttributeNames: {
           '#0': 'name',
           '#2': 'age'
