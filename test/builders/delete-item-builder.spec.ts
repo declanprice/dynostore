@@ -47,8 +47,6 @@ describe('DeleteItemBuilder', () => {
           }
         }
       })
-
-
   })
 
   describe('exec()', () => {
@@ -281,7 +279,6 @@ describe('DeleteItemBuilder', () => {
       }).toThrow('[InvalidOptions] - key is missing')
     })
   })
-
 })
 
 

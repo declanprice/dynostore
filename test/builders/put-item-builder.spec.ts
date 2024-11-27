@@ -86,7 +86,7 @@ describe('PutItemBuilder', () => {
     it('should send PutItemCommand with configured returnValue', async () => {
       const builder = new PutItemBuilder(testTableName, testClient)
 
-      await builder.item({ id: validTestId }).returnValue('ALL_NEW').exec()
+      await builder.item({ id: validTestId }).return('ALL_NEW').exec()
 
       expect(testClient).toHaveReceivedCommandWith(PutItemCommand, {
         TableName: testTableName,
@@ -182,7 +182,7 @@ describe('PutItemBuilder', () => {
         pk: 'item',
         sk: '1'
       })
-        .returnValue('ALL_OLD')
+        .return('ALL_OLD')
         .tx()
 
       expect(txItem).toEqual({
@@ -215,7 +215,7 @@ describe('PutItemBuilder', () => {
     it('should throw error if invalid ReturnValue option is configured', () => {
       const builder = new PutItemBuilder(testTableName, testClient as any)
 
-      builder.item({ pk: 'item', sk: '1' }).returnValue('ALL_NEW')
+      builder.item({ pk: 'item', sk: '1' }).return('ALL_NEW')
 
       expect(() => {
         builder.tx()

@@ -31,7 +31,7 @@ export class PutItemBuilder<Item> {
     return this
   }
 
-  returnValue(value: ReturnValue): PutItemBuilder<Item> {
+  return(value: ReturnValue): PutItemBuilder<Item> {
     this.options.returnValue = value
     return this
   }
@@ -74,7 +74,7 @@ export class PutItemBuilder<Item> {
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         ReturnValuesOnConditionCheckFailure: returnValue
-      },
+      }
     }
   }
 }

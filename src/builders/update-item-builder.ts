@@ -45,8 +45,8 @@ export class UpdateItemBuilder<Item> {
 
   async exec(): Promise<Item | null> {
     const { key, updateExpression, conditionExpression, returnValue } = this.options
-    if (!key) throw new Error('[invalid options] - key is required')
-    if (!updateExpression) throw new Error('[invalid options] - update expression is required')
+    if (!key) throw new Error('[InvalidOptions] - key is required')
+    if (!updateExpression) throw new Error('[InvalidOptions] - update expression is required')
 
     const result = await this.client.send(
       new UpdateItemCommand({
@@ -67,9 +67,11 @@ export class UpdateItemBuilder<Item> {
 
   tx(): TransactWriteItem {
     const { key, updateExpression, conditionExpression, returnValue } = this.options
-    if (!key) throw new Error('[invalid options] - key is required')
-    if (!updateExpression) throw new Error('[invalid options] - update expression is required')
-
+    if (!key) throw new Error('[InvalidOptions] - key is required')
+    if (!updateExpression) throw new Error('[InvalidOptions] - update expression is required')
+    if (returnValue && returnValue != 'ALL_OLD' && returnValue != 'NONE') {
+      throw new Error('[InvalidOptions] - only ALL_OLD or NONE returnValue is supported for transactions')
+    }
     return {
       Update: {
         TableName: this.tableName,
@@ -78,7 +80,7 @@ export class UpdateItemBuilder<Item> {
         ConditionExpression: conditionExpression?.expression,
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes.expressionAttributeValues,
-        ReturnValuesOnConditionCheckFailure: returnValue === 'ALL_OLD' ? 'ALL_OLD' : undefined
+        ReturnValuesOnConditionCheckFailure: returnValue
       }
     }
   }
