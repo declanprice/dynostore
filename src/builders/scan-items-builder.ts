@@ -85,14 +85,20 @@ export class ScanItemsBuilder<Item> {
         ExpressionAttributeNames: this.attributes?.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes?.expressionAttributeValues,
         Limit: limit,
-        ExclusiveStartKey: marshall(startAt, { convertClassInstanceToMap: true, removeUndefinedValues: true }),
+        ExclusiveStartKey: startAt ? marshall(startAt, {
+          convertClassInstanceToMap: true,
+          removeUndefinedValues: true
+        }) : undefined,
         TotalSegments: parallel?.totalSegments,
         Segment: parallel?.segment
       })
     )
 
     if (!response.Items) {
-      return [] as any
+      return {
+        items: [],
+        lastKey: null
+      }
     }
 
     return {

@@ -120,8 +120,8 @@ describe('UpdateItemBuilder', () => {
     it('should throw error is key is missing', () => {
       const builder = new UpdateItemBuilder(testTableName, testClient as any)
 
-      expect( async () => {
-       await builder.exec()
+      expect(async () => {
+        await builder.exec()
       }).rejects.toThrow('[InvalidOptions] - key is required')
     })
   })
