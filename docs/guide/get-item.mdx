@@ -14,7 +14,7 @@ import { Store } from '@declanprice/dynostore'
 
 const store = new Store('CustomerTable', new DynamoDBClient())
 
-const getRequest = store.get<CustomerItem>();
+const request = store.get<CustomerItem>();
 ```
 
 ### key(object)
@@ -22,7 +22,7 @@ const getRequest = store.get<CustomerItem>();
 Provide the item key to get.
 
 ```tsx
-getRequest.key({id: '1' });
+request.key({id: '1' });
 ```
 
 ### consistent()
@@ -30,7 +30,7 @@ getRequest.key({id: '1' });
 Require strongly consistent reads.
 
 ```tsx
-getRequest.consistent();
+request.consistent();
 ```
 
 
@@ -39,7 +39,7 @@ getRequest.consistent();
 Project specific fields to be returned.
 
 ```tsx
-getRequest.project('id,fistName,lastName');
+request.project('id,fistName,lastName');
 ```
 
 ### exec()
@@ -47,7 +47,7 @@ getRequest.project('id,fistName,lastName');
 Execute the request.
 
 ```tsx
-const customer = await getRequest.exec();
+const customer = await request.exec();
 ```
 
 ### tx()
@@ -55,5 +55,5 @@ const customer = await getRequest.exec();
 Create a TransactGetItem.
 
 ```tsx
-const customerTxItem = getRequest.tx();
+const customerTxItem = request.tx();
 ```

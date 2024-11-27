@@ -14,7 +14,7 @@ import { Store } from '@declanprice/dynostore'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const deleteRequest = await store.delete<CustomerItem>();
+const request = await store.delete<CustomerItem>();
 ```
 
 ### key(object)
@@ -22,7 +22,7 @@ const deleteRequest = await store.delete<CustomerItem>();
 Provide the item key to delete.
 
 ```tsx
-deleteRequest.key({id: '1' });
+request.key({id: '1' });
 ```
 
 ### condition(...conditions)
@@ -30,7 +30,7 @@ deleteRequest.key({id: '1' });
 Provide any combination of supported dynamodb conditions, multiple conditions must be seperated by either `and()`, `or()` conditions otherwise an error will be thrown.
 
 ```tsx
-deleteRequest.condition(notExists('id'), and(), not(eq('name'), 'declan'))
+request.condition(notExists('id'), and(), not(eq('name'), 'declan'))
 ```
 
 ### return(string)
@@ -38,7 +38,7 @@ deleteRequest.condition(notExists('id'), and(), not(eq('name'), 'declan'))
 Provide return  the old item as part of the response.
 
 ```tsx
-deleteRequest.return('ALL_OLD')
+request.return('ALL_OLD')
 ```
 
 ### exec()
@@ -46,7 +46,7 @@ deleteRequest.return('ALL_OLD')
 Execute the request.
 
 ```tsx
-const oldCustomer = await deleteRequest.exec()
+const oldCustomer = await request.exec()
 ```
 
 ### tx()
@@ -54,5 +54,5 @@ const oldCustomer = await deleteRequest.exec()
 Create a TransactDeleteItem.
 
 ```tsx
-const deleteCustomerTxItem = deleteRequest.tx()
+const deleteCustomerTxItem = request.tx()
 ```

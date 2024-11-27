@@ -14,7 +14,7 @@ import { Store } from '@declanprice/dynostore'
 
 const store = new Store('CustomerTable', new DynamoDBClient())
 
-const putRequest = store.put<CustomerItem>()
+const request = store.put<CustomerItem>()
 ```
 
 ### item(object)
@@ -22,7 +22,7 @@ const putRequest = store.put<CustomerItem>()
 Provide the item to put.
 
 ```tsx
-putRequest.item({ id: '1', firstName: 'John' });
+request.item({ id: '1', firstName: 'John' });
 ```
 
 ### condition(...conditions)
@@ -30,7 +30,7 @@ putRequest.item({ id: '1', firstName: 'John' });
 Provide any combination of supported dynamodb conditions, multiple conditions must be seperated by either `and()`, `or()` conditions otherwise an error will be thrown.
 
 ```tsx
-putRequest
+request
     .condition(eq('name', 'John'), and(), gt('age', 22))
     // automatically separates two stacked condition calls with `and()` condition.
     .condition(eq('address', '1/1 address st')
@@ -38,10 +38,10 @@ putRequest
 
 ### return(string)
 
-// automatically separates two stacked condition calls with `and()` condition.
-.condition(eq('address', '1/1 address st')
+Provide return value from of the response.
+
 ```tsx
-putRequest.return('ALL_NEW')
+request.return('ALL_NEW')
 ```
 
 ### exec()
@@ -49,7 +49,7 @@ putRequest.return('ALL_NEW')
 Execute the request.
 
 ```tsx
-await putRequest.exec();
+await request.exec();
 ```
 
 ### tx()
@@ -57,5 +57,5 @@ await putRequest.exec();
 Create a TransactPutItem.
 
 ```tsx
-const putCustomerTxItem = putRequest.tx();
+const putCustomerTxItem = request.tx();
 ```
