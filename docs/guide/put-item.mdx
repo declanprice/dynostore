@@ -4,7 +4,9 @@ sidebar_position: 3
 
 # PutItem
 
-### Put item
+### Store.put()
+
+Create a put query.
 
 ```tsx
 import { DynamoDBClient } from '@aws-cdk/client-dynamodb'
@@ -12,44 +14,48 @@ import { Store } from '@declanprice/dynostore'
 
 const store = new Store('CustomerTable', new DynamoDBClient())
 
-await store.put<CustomerItem>().item({ id: customer.id, firstName: customer.firstName }).exec();
+const putRequest = store.put<CustomerItem>()
 ```
 
-### Put item with condition
+### item(object)
 
-Put item can optionally provide any combination of conditions that dynamodb supports, conditions must be seperated by either and(), or() conditions otherwise dynamodb will throw an error.
-
-Stacked condition calls as seen below are automatically seperated using an and() condition.
+Provide the item to put.
 
 ```tsx
-await store.put<CustomerItem>()
-        .item({ id: '1', firstName: 'John' })
-        .condition(eq('name', 'John'), and(), gt('age', 22))
-        .condition(eq('address', '1/1 address st')
-        .exec();
-);
+putRequest.item({ id: '1', firstName: 'John' });
 ```
 
-### Put item return values
+### condition(...conditions)
 
-Put item can optionally specify the return values wanted.
+Provide any combination of supported dynamodb conditions, multiple conditions must be seperated by either `and()`, `or()` conditions otherwise an error will be thrown.
 
 ```tsx
-await store.put<CustomerItem>()
-        .item({ id: '1', firstName: 'John' })
-        .return('ALL_OLD')
-        .exec();
-);
+putRequest
+    .condition(eq('name', 'John'), and(), gt('age', 22))
+    // automatically separates two stacked condition calls with `and()` condition.
+    .condition(eq('address', '1/1 address st')
 ```
 
-### Put item for transaction
+### return(string)
 
-Put item can be used within a transaction
+// automatically separates two stacked condition calls with `and()` condition.
+.condition(eq('address', '1/1 address st')
+```tsx
+putRequest.return('ALL_NEW')
+```
+
+### exec()
+
+Execute the request.
 
 ```tsx
-const customerTxItem = store.put<CustomerItem>()
-        .item({ id: '1', firstName: 'John' })
-        .return('ALL_OLD')
-        .tx();
-);
+await putRequest.exec();
+```
+
+### tx()
+
+Create a TransactPutItem.
+
+```tsx
+const putCustomerTxItem = putRequest.tx();
 ```

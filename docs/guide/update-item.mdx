@@ -1,0 +1,74 @@
+---
+sidebar_position: 4
+---
+
+# UpdateItem
+
+### Store.update()
+
+Create a update query.
+
+```tsx
+import { Store } from '@declanprice/dynostore'
+
+const store = new Store('customers', new new DynamoDBClient())
+
+const updateRequest = await store.update<CustomerItem>();
+```
+
+### key(object)
+
+Provide the item key to update.
+
+```tsx
+updateRequest.key({ id: customer.id });
+```
+
+### update(...conditions)
+
+Provide one or more update conditions.
+
+```tsx
+updateRequest.update(
+    set('name', 'declan'),
+    increment('age', 1),
+);
+```
+
+### condition(...conditions)
+
+Provide any combination of supported dynamodb conditions, multiple conditions must be seperated by either `and()`, `or()` conditions otherwise an error will be thrown.
+
+```tsx
+updateRequest.condition(
+    eq('name', 'declan'),
+    and(),
+    gt('age', 22)
+);
+```
+
+### return(string)
+
+Provide return value from of the response.
+
+```tsx
+updateRequest.return('ALL_NEW')
+```
+
+### exec()
+
+Execute the request.
+
+The response will either be the  `return` value specified, or null.
+
+```tsx
+const oldCustomer: Customer | null = await updateRequest.exec();
+```
+
+### tx()
+
+Create a TransactUpdateItem.
+
+```tsx
+const updateCustomerTxItem = updateRequest.tx()
+```

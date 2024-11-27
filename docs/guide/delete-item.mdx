@@ -6,62 +6,53 @@ sidebar_position: 5
 
 ### Store.delete()
 
+Create a delete query.
+
 ```tsx
+import { DynamoDBClient } from '@aws-cdk/client-dynamodb'
 import { Store } from '@declanprice/dynostore'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const delete = await store.delete<CustomerItem>();
+const deleteRequest = await store.delete<CustomerItem>();
 ```
 
-### key(itemKey)
+### key(object)
 
-Delete item must always contain an key object.
+Provide the item key to delete.
 
 ```tsx
-delete.key({ id: customer.id });
+deleteRequest.key({id: '1' });
 ```
 
 ### condition(...conditions)
 
-Delete item can optionally provide any combination of conditions that must be met for the request to succeed, conditions must always be seperated by either and(), or() conditions otherwise an error fill be thrown.
-
-Conditions only apply to the current item being deleted.
+Provide any combination of supported dynamodb conditions, multiple conditions must be seperated by either `and()`, `or()` conditions otherwise an error will be thrown.
 
 ```tsx
-delete.condition(
-    eq('name', 'declan'),
-    and(),
-    gt('age', 22)
-);
+deleteRequest.condition(notExists('id'), and(), not(eq('name'), 'declan'))
 ```
 
-### returnOld()
+### return(string)
 
-Delete item can optionally return the old item as part of the response.
+Provide return  the old item as part of the response.
 
 ```tsx
-delete.returnOld()
+deleteRequest.return('ALL_OLD')
 ```
 
 ### exec()
 
-Delete item will only be run once you specifically execute it.
-
-The response from exec will either be the old unmarshalled item if `returnOld` is specified, otherwise it will be null.
+Execute the request.
 
 ```tsx
-const oldCustomer: Customer = await delete.exec();
-
-await delete.exec();
+const oldCustomer = await deleteRequest.exec()
 ```
 
 ### tx()
 
-Delete item can be used within a transaction
+Create a TransactDeleteItem.
 
 ```tsx
-const customerTx: Customer = delete.tx();
-
-await transactWriteItems(customerTx);
+const deleteCustomerTxItem = deleteRequest.tx()
 ```
