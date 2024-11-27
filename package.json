@@ -1,38 +1,44 @@
 {
-  "name": "@declanprice/dynostore",
-  "version": "0.0.13",
-  "description": "lightweight query builder for dynamodb using AWS SDK V3",
-  "main": "./dist/index.js",
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch",
-    "test": "jest",
-    "test:integration": "jest --config jest-integration.config.js --runInBand",
-    "test:integration:setup": "aws dynamodb create-table --region eu-west-1 --endpoint-url http://127.0.0.1:8000 --cli-input-json file://test-table.json"
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.699.0",
-    "@aws-sdk/util-dynamodb": "^3.699.0"
+    "@docusaurus/core": "3.1.1",
+    "@docusaurus/preset-classic": "3.1.1",
+    "@mdx-js/react": "^3.0.0",
+    "clsx": "^2.0.0",
+    "prism-react-renderer": "^2.3.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.14",
-    "aws-sdk-client-mock": "^4.1.0 ",
-    "aws-sdk-client-mock-jest": "^4.1.0 ",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.2.5 ",
-    "typescript": "^5.7.2"
+    "@docusaurus/module-type-aliases": "3.1.1",
+    "@docusaurus/types": "3.1.1"
   },
-  "peerDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.699.0",
-    "@aws-sdk/util-dynamodb": "^3.699.0"
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0"
   }
 }

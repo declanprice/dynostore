@@ -1,1 +1,0 @@
-export type ItemKey = {[key: string]: string | number };
