@@ -3,6 +3,13 @@
   "version": "0.0.13",
   "description": "lightweight query builder for dynamodb using AWS SDK V3",
   "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
