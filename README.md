@@ -56,7 +56,7 @@ await store.scan<any>()
   .exec()
 ```
 
-See  [Documentation](declanprice.github.io/dynostore/) for more in depth usage.
+See  [Documentation](https://declanprice.github.io/dynostore/) for more in depth usage.
 
  
 
