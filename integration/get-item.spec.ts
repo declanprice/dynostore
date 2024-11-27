@@ -17,10 +17,18 @@ type CustomerItem = {
 
 describe('GetItem', () => {
   const customer: CustomerItem = {
-    pk: '1',
-    sk: 'customer',
-    name: 'test'
+    pk: 'customer',
+    sk: 'invoice-1',
+    name: 'declan'
   }
+
+  beforeAll(async () => {
+    const { items } = await store.scan<any>().exec()
+
+    for (const item of items) {
+      await store.delete().key({ pk: item.pk, sk: item.sk }).exec()
+    }
+  })
 
   beforeAll(async () => {
     await client.send(

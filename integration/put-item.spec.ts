@@ -17,10 +17,18 @@ type CustomerItem = {
 
 describe('PutItem', () => {
   const customer: CustomerItem = {
-    pk: '1',
-    sk: 'customer',
-    name: 'test'
+    pk: 'customer',
+    sk: 'invoice-1',
+    name: 'declan'
   }
+
+  beforeAll(async () => {
+    const { items } = await store.scan<any>().exec()
+
+    for (const item of items) {
+      await store.delete().key({ pk: item.pk, sk: item.sk }).exec()
+    }
+  })
 
   beforeEach(async () => {
     await store.delete().key({ pk: customer.pk, sk: customer.sk }).exec()
@@ -41,7 +49,7 @@ describe('PutItem', () => {
 
   it('should put item successfully and return old values', async () => {
     await store.put<CustomerItem>().item(customer).exec()
-    const item = await store.put<CustomerItem>().item(customer).returnOld().exec()
+    const item = await store.put<CustomerItem>().item(customer).return('ALL_OLD').exec()
     if (!item) throw new Error('item is null')
     expect(item).toBeTruthy()
     expect(item.pk).toEqual(customer.pk)

@@ -254,9 +254,7 @@ describe('ScanItemsBuilder', () => {
       })
 
     const builder = new ScanItemsBuilder(testTableName, testClient as any)
-
     const items = await builder.filter(eq('name', 'declan')).exec()
-
     expect(items.items).toEqual([])
     expect(items.lastKey).toEqual(null)
   })

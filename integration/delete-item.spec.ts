@@ -12,16 +12,22 @@ type CustomerItem = {
   pk: string
   sk: string
   name: string
-  version: number
 }
 
-describe.only('DeleteItem', () => {
+describe('DeleteItem', () => {
   const customer: CustomerItem = {
-    pk: '1',
-    sk: 'customer',
-    name: 'test',
-    version: 0
+    pk: 'customer',
+    sk: 'invoice-1',
+    name: 'declan'
   }
+
+  beforeAll(async () => {
+    const { items } = await store.scan<any>().exec()
+
+    for (const item of items) {
+      await store.delete().key({ pk: item.pk, sk: item.sk }).exec()
+    }
+  })
 
   beforeEach(async () => {
     await store.put().item(customer).exec()

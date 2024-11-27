@@ -72,7 +72,7 @@ export class ScanItemsBuilder<Item> {
     return this
   }
 
-  async exec<Item>(): Promise<ScanResponse<Item>> {
+  async exec(): Promise<ScanResponse<Item>> {
     const { indexName, consistent, projection, filterExpression, limit, startAt, parallel } = this.options
 
     const response = await this.client.send(

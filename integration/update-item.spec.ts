@@ -17,7 +17,7 @@ type CustomerItem = {
   version: number
 }
 
-describe.only('UpdateItem', () => {
+describe('UpdateItem', () => {
   const customer: CustomerItem = {
     pk: '1',
     sk: 'customer',

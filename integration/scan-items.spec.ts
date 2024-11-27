@@ -1,8 +1,6 @@
-import { ConditionalCheckFailedException, DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { Store } from '../src/store'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { beginsWith, eq, Store } from '../src'
 import { wait } from './wait'
-import { notExists } from '../src/expressions/condition/notExists'
-import { eq, increment, set } from '../src'
 
 const client = new DynamoDBClient()
 
@@ -14,21 +12,52 @@ type CustomerItem = {
   pk: string
   sk: string
   name: string
-  version: number
 }
 
-describe.only('UpdateItem', () => {
-  const customer: CustomerItem = {
-    pk: '1',
-    sk: 'customer',
-    name: 'test',
-    version: 0
-  }
+describe('ScanItems', () => {
+  const customers: CustomerItem[] = [
+    {
+      pk: `customer`,
+      sk: 'invoice-1',
+      name: `declan`
+    },
+    {
+      pk: `customer`,
+      sk: 'invoice-12',
+      name: `ryan`
+    },
+    {
+      pk: `customer`,
+      sk: 'invoice-3',
+      name: `declan`
+    }
+  ]
+
+  beforeAll(async () => {
+    const { items } = await store.scan<any>().exec()
+
+    for (const item of items) {
+      await store.delete().key({ pk: item.pk, sk: item.sk }).exec()
+    }
+  })
 
   beforeEach(async () => {
-    await store.put().item(customer).exec()
+    for (const customer of customers) {
+      await store.put().item(customer).exec()
+    }
+
     await wait(100)
   })
 
-  it('should update item successfully', async () => {})
+  it('should scan items successfully', async () => {
+    const { items } = await store.scan<any>().exec()
+
+    expect(items).toHaveLength(3)
+  })
+
+  it('should scan items successfully with filter', async () => {
+    const { items } = await store.scan<any>().filter(eq('name', 'ryan')).exec()
+
+    expect(items).toHaveLength(1)
+  })
 })
