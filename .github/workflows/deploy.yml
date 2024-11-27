@@ -47,7 +47,7 @@ jobs:
         continue-on-error: false
 
       - name: Run integration tests
-        run: npm test:integration
+        run: npm run test:integration
         continue-on-error: false
 
       - name: Build the project
