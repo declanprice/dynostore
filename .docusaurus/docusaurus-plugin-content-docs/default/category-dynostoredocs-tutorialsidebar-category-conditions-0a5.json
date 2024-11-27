@@ -1,0 +1,15 @@
+{
+  "title": "Conditions",
+  "slug": "/category/conditions",
+  "permalink": "/dynostore/docs/category/conditions",
+  "navigation": {
+    "previous": {
+      "title": "ScanItems",
+      "permalink": "/dynostore/docs/guide/scan-items"
+    },
+    "next": {
+      "title": "Filter conditions",
+      "permalink": "/dynostore/docs/guide/conditions/filter_conditions"
+    }
+  }
+}

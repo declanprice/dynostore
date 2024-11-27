@@ -1,0 +1,23 @@
+{
+  "id": "guide/conditions/update-conditions",
+  "title": "Update conditions",
+  "description": "set(path, value)",
+  "source": "@site/docs/guide/conditions/update-conditions.mdx",
+  "sourceDirName": "guide/conditions",
+  "slug": "/guide/conditions/update-conditions",
+  "permalink": "/dynostore/docs/guide/conditions/update-conditions",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/declanprice/dynostore/tree/main/docs/guide/conditions/update-conditions.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filter conditions",
+    "permalink": "/dynostore/docs/guide/conditions/filter_conditions"
+  }
+}

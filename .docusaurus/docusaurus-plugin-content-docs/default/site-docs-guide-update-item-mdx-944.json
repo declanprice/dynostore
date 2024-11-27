@@ -1,0 +1,27 @@
+{
+  "id": "guide/update-item",
+  "title": "UpdateItem",
+  "description": "Store.update()",
+  "source": "@site/docs/guide/update-item.mdx",
+  "sourceDirName": "guide",
+  "slug": "/guide/update-item",
+  "permalink": "/dynostore/docs/guide/update-item",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/declanprice/dynostore/tree/main/docs/guide/update-item.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "PutItem",
+    "permalink": "/dynostore/docs/guide/put-item"
+  },
+  "next": {
+    "title": "DeleteItem",
+    "permalink": "/dynostore/docs/guide/delete-item"
+  }
+}

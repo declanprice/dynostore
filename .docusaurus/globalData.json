@@ -1,0 +1,88 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/dynostore/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/dynostore/docs",
+          "mainDocId": "getting-started",
+          "docs": [
+            {
+              "id": "getting-started",
+              "path": "/dynostore/docs/getting-started",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/conditions/filter_conditions",
+              "path": "/dynostore/docs/guide/conditions/filter_conditions",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/conditions/update-conditions",
+              "path": "/dynostore/docs/guide/conditions/update-conditions",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/delete-item",
+              "path": "/dynostore/docs/guide/delete-item",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/get-item",
+              "path": "/dynostore/docs/guide/get-item",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/put-item",
+              "path": "/dynostore/docs/guide/put-item",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/query-items",
+              "path": "/dynostore/docs/guide/query-items",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/scan-items",
+              "path": "/dynostore/docs/guide/scan-items",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/store",
+              "path": "/dynostore/docs/guide/store",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guide/update-item",
+              "path": "/dynostore/docs/guide/update-item",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "/category/guide",
+              "path": "/dynostore/docs/category/guide",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "/category/conditions",
+              "path": "/dynostore/docs/category/conditions",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/dynostore/docs/getting-started",
+                "label": "getting-started"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

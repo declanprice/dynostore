@@ -1,0 +1,27 @@
+{
+  "id": "guide/store",
+  "title": "Store",
+  "description": "Creating a store",
+  "source": "@site/docs/guide/store.mdx",
+  "sourceDirName": "guide",
+  "slug": "/guide/store",
+  "permalink": "/dynostore/docs/guide/store",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/declanprice/dynostore/tree/main/docs/guide/store.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Guide",
+    "permalink": "/dynostore/docs/category/guide"
+  },
+  "next": {
+    "title": "GetItem",
+    "permalink": "/dynostore/docs/guide/get-item"
+  }
+}

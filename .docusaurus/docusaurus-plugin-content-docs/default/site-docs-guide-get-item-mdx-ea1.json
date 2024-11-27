@@ -1,0 +1,27 @@
+{
+  "id": "guide/get-item",
+  "title": "GetItem",
+  "description": "Store.get()",
+  "source": "@site/docs/guide/get-item.mdx",
+  "sourceDirName": "guide",
+  "slug": "/guide/get-item",
+  "permalink": "/dynostore/docs/guide/get-item",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/declanprice/dynostore/tree/main/docs/guide/get-item.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Store",
+    "permalink": "/dynostore/docs/guide/store"
+  },
+  "next": {
+    "title": "PutItem",
+    "permalink": "/dynostore/docs/guide/put-item"
+  }
+}

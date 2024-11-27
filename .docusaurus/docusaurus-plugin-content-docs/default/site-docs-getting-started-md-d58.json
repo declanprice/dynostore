@@ -1,0 +1,23 @@
+{
+  "id": "getting-started",
+  "title": "Getting Started",
+  "description": "What is dynostore?",
+  "source": "@site/docs/getting-started.md",
+  "sourceDirName": ".",
+  "slug": "/getting-started",
+  "permalink": "/dynostore/docs/getting-started",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/declanprice/dynostore/tree/main/docs/getting-started.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "next": {
+    "title": "Guide",
+    "permalink": "/dynostore/docs/category/guide"
+  }
+}

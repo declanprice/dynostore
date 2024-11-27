@@ -1,0 +1,27 @@
+{
+  "id": "guide/conditions/filter_conditions",
+  "title": "Filter conditions",
+  "description": "eq(path, value)",
+  "source": "@site/docs/guide/conditions/filter_conditions.mdx",
+  "sourceDirName": "guide/conditions",
+  "slug": "/guide/conditions/filter_conditions",
+  "permalink": "/dynostore/docs/guide/conditions/filter_conditions",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/declanprice/dynostore/tree/main/docs/guide/conditions/filter_conditions.mdx",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Conditions",
+    "permalink": "/dynostore/docs/category/conditions"
+  },
+  "next": {
+    "title": "Update conditions",
+    "permalink": "/dynostore/docs/guide/conditions/update-conditions"
+  }
+}
