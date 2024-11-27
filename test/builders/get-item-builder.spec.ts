@@ -1,4 +1,4 @@
-import { DeleteItemCommand, DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb'
 import { mockClient } from 'aws-sdk-client-mock'
 import 'aws-sdk-client-mock-jest'
 import { GetItemBuilder } from '../../src'
@@ -99,12 +99,20 @@ describe('GetItemBuilder', () => {
         Key: {
           id: {
             S: invalidTestId
-          },
+          }
         },
-        ProjectionExpression: undefined,
+        ProjectionExpression: undefined
       })
 
       expect(item).toEqual(null)
+    })
+
+    it('exec should throw error if key is missing', async () => {
+      const builder = new GetItemBuilder(testTableName, testClient as any)
+
+      await expect(async () => {
+        await builder.exec()
+      }).rejects.toThrow('[InvalidOptions] - key is missing')
     })
   })
 
@@ -189,18 +197,9 @@ describe('GetItemBuilder', () => {
         }
       })
     })
-  })
 
-  describe('errors', () => {
-    it('exec should throw error if key is missing', async () => {
-      const builder = new GetItemBuilder(testTableName, testClient as any)
 
-      await expect(async () => {
-        await builder.exec()
-      }).rejects.toThrow('[InvalidOptions] - key is missing')
-    })
-
-    it('tx() should throw error if key is missing', () => {
+    it('should throw error if key is missing', () => {
       const builder = new GetItemBuilder(testTableName, testClient as any)
 
       expect(() => {

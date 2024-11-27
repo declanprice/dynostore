@@ -22,22 +22,6 @@ describe('ScanItemsBuilder', () => {
     //   .resolves({
     //     Item: { id: { S: validTestId }, name: { S: 'test' }, age: { N: '25' } }
     //   })
-    //   .on(GetItemCommand, {
-    //     Key: {
-    //       id: {
-    //         S: invalidTestId
-    //       }
-    //     }
-    //   })
-    //   .resolves({ Item: undefined })
-  })
-
-  it('should send GetItemCommand with configured options', async () => {
-  })
-
-  it('should return null if Item is undefined', async () => {
   })
 })
 
-describe('ScanItemsBuilder - errors', () => {
-})

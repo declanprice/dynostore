@@ -47,6 +47,8 @@ describe('DeleteItemBuilder', () => {
           }
         }
       })
+
+
   })
 
   describe('exec()', () => {
@@ -144,6 +146,8 @@ describe('DeleteItemBuilder', () => {
         },
         ReturnValues: 'NONE'
       })
+
+
     })
 
     it('should send DeleteItemCommand and return value when ReturnValue set as ALL_OLD', async () => {
@@ -198,6 +202,14 @@ describe('DeleteItemBuilder', () => {
       })
 
       expect(result).toEqual(null)
+    })
+
+    it('exec should throw error if key is missing', async () => {
+      const builder = new DeleteItemBuilder('TestTable', testClient as any)
+
+      await expect(async () => {
+        await builder.exec()
+      }).rejects.toThrow('[InvalidOptions] - key is missing')
     })
   })
 
@@ -260,18 +272,8 @@ describe('DeleteItemBuilder', () => {
         }
       })
     })
-  })
 
-  describe('errors', () => {
-    it('exec should throw error if key is missing', async () => {
-      const builder = new DeleteItemBuilder('TestTable', testClient as any)
-
-      await expect(async () => {
-        await builder.exec()
-      }).rejects.toThrow('[InvalidOptions] - key is missing')
-    })
-
-    it('tx() should throw error if key is missing', () => {
+    it('should throw error if key is missing', () => {
       const builder = new DeleteItemBuilder('TestTable', testClient as any)
 
       expect(() => {
@@ -279,6 +281,7 @@ describe('DeleteItemBuilder', () => {
       }).toThrow('[InvalidOptions] - key is missing')
     })
   })
+
 })
 
 

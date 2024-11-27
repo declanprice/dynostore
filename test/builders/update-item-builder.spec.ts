@@ -32,6 +32,3 @@ describe('UpdateItemBuilder', () => {
     //   .resolves({ Item: undefined })
   })
 })
-
-describe('UpdateItemBuilder - errors', () => {
-})

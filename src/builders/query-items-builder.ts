@@ -7,7 +7,7 @@ import {
 } from '../expressions/condition/condition-expression'
 import { ItemKey } from '../item/item-key'
 import { Expression } from '../expressions/expression'
-import { ExpressionAttributes } from '../expressions'
+import { EqCondition, ExpressionAttributes } from '../expressions'
 
 export type QueryResponse<Item> = {
   items: Item[]
@@ -37,9 +37,9 @@ export class QueryItemsBuilder<Item> {
   ) {
   }
 
-  pk(path: string, value: string | number): QueryItemsBuilder<Item> {
-    const pkName = this.attributes.addName(path);
-    const pkValue = this.attributes.addValue(value);
+  pk(condition: EqCondition): QueryItemsBuilder<Item> {
+    const pkName = this.attributes.addName(condition.path)
+    const pkValue = this.attributes.addValue(condition.value)
     this.options.pkExpression = `${pkName} = ${pkValue}`
     return this
   }
@@ -84,19 +84,19 @@ export class QueryItemsBuilder<Item> {
   async exec(): Promise<QueryResponse<Item>> {
     const { pkExpression, sk, projection, filterExpression, limit, startAt, sort } = this.options
 
-    if (!pkExpression) throw new Error('[invalid options] - pk is missing')
+    if (!pkExpression) throw new Error('[InvalidOptions] - pk is missing')
 
     const response = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
         IndexName: this.options.indexName,
         ProjectionExpression: projection,
-        KeyConditionExpression: sk ? `${this.options.pkExpression} AND ${sk?.conditionExpression.expression}` : this.options.pkExpression,
+        KeyConditionExpression: sk ? `${this.options.pkExpression} and ${sk?.conditionExpression.expression}` : this.options.pkExpression,
         FilterExpression: filterExpression?.expression,
         ExpressionAttributeNames: this.attributes.expressionAttributeNames,
         ExpressionAttributeValues: this.attributes.expressionAttributeValues,
         Limit: limit,
-        ExclusiveStartKey: startAt ? marshall(startAt, { removeUndefinedValues: true }): undefined,
+        ExclusiveStartKey: startAt ? marshall(startAt, { removeUndefinedValues: true }) : undefined,
         ScanIndexForward: sort !== 'desc'
       })
     )
