@@ -4,14 +4,16 @@ sidebar_position: 1
 
 # Getting Started
 
-### Who is dynostore for?
+### What is dynostore?
 
-Dynostore is suitable for developers who already understand the basics of the dynamodb low level api provided by AWS SDK.
-
+Dynostore is a minimal no magic query builder for dynamodb, it's a simple layer on top of the native dynamodb AWS V3 SDK
+API.
 
 ## Install
 
 ```bash
+npm install @aws-sdk/client-dynamodb
+
 npm install @declanprice/dynostore
 ```
 

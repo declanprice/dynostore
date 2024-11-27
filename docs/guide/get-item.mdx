@@ -4,57 +4,34 @@ sidebar_position: 2
 
 # GetItem
 
-### Store.get()
+### Get item
 
 ```tsx
+import { DynamoDBClient } from '@aws-cdk/client-dynamodb'
 import { Store } from '@declanprice/dynostore'
 
-const store = new Store('customers', new new DynamoDBClient())
+const store = new Store('CustomerTable', new DynamoDBClient())
 
-const get = await store.get<CustomerItem>();
+const customer = await store.get<CustomerItem>().exec();
 ```
 
-### key(key)
-
-Get item must always contain a key object.
+### Get item with strong consistency
 
 ```tsx
-get.key({ id: customer.id });
+const customer = await store.get<CustomerItem>().consistent().exec();
 ```
 
-### consistent(key)
 
-Get item can optionally be read the item with strong consistency.
+### Get item with projection
 
 ```tsx
-get.consistent();
+const customer = await store.get<CustomerItem>().project('id,fistName,lastName').exec();
 ```
 
-### project(projection)
-
-Get item can optionally project specific attributes using comma seperated values.
-
-```tsx
-get.project('id,fistName,lastName')
-```
-
-
-### exec()
-
-Get item will only be run once you specifically execute it.
-
-The response from exec will be the unmarshalled item.
-
-```tsx
-const customer: Customer = getItem.exec();
-```
-
-### tx()
+### Get item for transaction
 
 Get item can be used within a transaction
 
 ```tsx
-const getCustomerTx = getItem.tx();
-
-await transactGetItems(getCustomerTx);
+const customerTxItem = store.get<CustomerItem>().tx();
 ```

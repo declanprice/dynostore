@@ -4,64 +4,52 @@ sidebar_position: 3
 
 # PutItem
 
-### Store.put()
+### Put item
 
 ```tsx
+import { DynamoDBClient } from '@aws-cdk/client-dynamodb'
 import { Store } from '@declanprice/dynostore'
 
-const store = new Store('customers', new new DynamoDBClient())
+const store = new Store('CustomerTable', new DynamoDBClient())
 
-const put = await store.put<CustomerItem>();
+await store.put<CustomerItem>().item({ id: customer.id, firstName: customer.firstName }).exec();
 ```
 
-### item(object)
+### Put item with condition
 
-Put item must always contain an item object.
+Put item can optionally provide any combination of conditions that dynamodb supports, conditions must be seperated by either and(), or() conditions otherwise dynamodb will throw an error.
 
-```tsx
-put.item({ id: customer.id, firstName: customer.firstName });
-```
-
-### condition(...conditions)
-
-Put item can optionally provide any combination of conditions that must be met for the request to succeed, conditions must always be seperated by either and(), or() conditions otherwise an error fill be thrown.
-
-Conditions only apply to the current item being put.
+Stacked condition calls as seen below are automatically seperated using an and() condition.
 
 ```tsx
-put.condition(
-    eq('name', 'declan'),
-    and(),
-    gt('age', 22)
+await store.put<CustomerItem>()
+        .item({ id: '1', firstName: 'John' })
+        .condition(eq('name', 'John'), and(), gt('age', 22))
+        .condition(eq('address', '1/1 address st')
+        .exec();
 );
 ```
 
-### returnOld()
+### Put item return values
 
-Put item can optionally return the old item as part of the response.
-
-```tsx
-put.returnOld()
-```
-
-### exec()
-
-Put item will only be run once you specifically execute it.
-
-The response from exec will either be the old unmarshalled item if `returnOld` is specified, otherwise it will be null.
+Put item can optionally specify the return values wanted.
 
 ```tsx
-const oldCustomer: Customer = await put.exec();
-
-await put.exec();
+await store.put<CustomerItem>()
+        .item({ id: '1', firstName: 'John' })
+        .return('ALL_OLD')
+        .exec();
+);
 ```
 
-### tx()
+### Put item for transaction
 
 Put item can be used within a transaction
 
 ```tsx
-const customerTx: Customer = put.tx();
-
-await transactWriteItems(customerTx);
+const customerTxItem = store.put<CustomerItem>()
+        .item({ id: '1', firstName: 'John' })
+        .return('ALL_OLD')
+        .tx();
+);
 ```
