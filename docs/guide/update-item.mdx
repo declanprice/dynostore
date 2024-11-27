@@ -17,7 +17,7 @@ const store = new Store('customers', new new DynamoDBClient())
 const request = await store.update<CustomerItem>();
 ```
 
-### key(object)
+### key(key)
 
 Provide the item key to update.
 
@@ -48,7 +48,7 @@ request.condition(
 );
 ```
 
-### return(string)
+### return(returnValue)
 
 Provide return value from of the response.
 

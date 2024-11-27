@@ -17,7 +17,7 @@ const store = new Store('customers', new new DynamoDBClient())
 const request = await store.delete<CustomerItem>();
 ```
 
-### key(object)
+### key(key)
 
 Provide the item key to delete.
 
@@ -33,7 +33,7 @@ Provide any combination of supported dynamodb conditions, multiple conditions mu
 request.condition(notExists('id'), and(), not(eq('name'), 'declan'))
 ```
 
-### return(string)
+### return(returnValue)
 
 Provide return  the old item as part of the response.
 

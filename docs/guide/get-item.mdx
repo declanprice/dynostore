@@ -17,7 +17,7 @@ const store = new Store('CustomerTable', new DynamoDBClient())
 const request = store.get<CustomerItem>();
 ```
 
-### key(object)
+### key(key)
 
 Provide the item key to get.
 
@@ -34,7 +34,7 @@ request.consistent();
 ```
 
 
-### projection(string)
+### projection(projectionString)
 
 Project specific fields to be returned.
 

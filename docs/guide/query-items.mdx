@@ -18,12 +18,12 @@ const query = store.query<CustomerItem>()
 ```
 
 
-### pk(field, value)
+### pk(path, value)
 
 Provide the partition item key to be used.
 
 ```tsx
-query.pk('pk', '123');
+query.pk('id', '123');
 ```
 
 ### sk(condition)
@@ -64,7 +64,7 @@ query.filter(
 )
 ```
 
-### project(string)
+### project(projectionString)
 
 Project specific fields to be returned.
 
