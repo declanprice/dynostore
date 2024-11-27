@@ -42,16 +42,14 @@ jobs:
         continue-on-error: false
 
       - name: Start dynamodb
-        run: docker run -d -p 8080:8080 amazon/dynamodb-local
+        run: docker run -d -p 8000:8000 amazon/dynamodb-local
         continue-on-error: false
-
 
       - name: Run dynamodb setup script
         run: |
           aws configure set aws_access_key_id test
           aws configure set aws_secret_access_key test
           npm run test:integration:setup
-
         continue-on-error: false
 
       - name: Run integration tests
