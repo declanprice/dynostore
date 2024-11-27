@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="@127.0.0.1">
+  <database-model serializer="dbm" dbms="DYNAMO" family-id="DYNAMO" format-version="4.53">
+    <root id="1">
+      <ServerVersion>1.0</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="schema"/>
+    <table id="3" parent="2" name="TestTable">
+      <ReadThroughput>5</ReadThroughput>
+      <WriteThroughput>5</WriteThroughput>
+    </table>
+    <column id="4" parent="3" name="pk">
+      <Position>1</Position>
+      <StoredType>S|0s</StoredType>
+    </column>
+    <column id="5" parent="3" name="sk">
+      <Position>2</Position>
+      <StoredType>S|0s</StoredType>
+    </column>
+    <key id="6" parent="3" name="primary key">
+      <PartitionColumnName>pk</PartitionColumnName>
+      <SortColumnName>sk</SortColumnName>
+    </key>
+  </database-model>
+</dataSource>

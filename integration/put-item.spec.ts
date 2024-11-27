@@ -3,7 +3,7 @@ import { Store } from '../src/store'
 import { wait } from './wait'
 import { notExists } from '../src/expressions/condition/notExists'
 
-const client = new DynamoDBClient()
+const client = new DynamoDBClient({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-1' })
 
 const tableName = 'TestTable'
 
