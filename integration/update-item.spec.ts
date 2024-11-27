@@ -3,7 +3,12 @@ import { Store } from '../src/store'
 import { wait } from './wait'
 import { and, eq, exists, increment, set } from '../src'
 
-const client = new DynamoDBClient({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-1' })
+const client = new DynamoDBClient({
+  endpoint: 'http://127.0.0.1:8000', region: 'eu-west-1', credentials: {
+    accessKeyId: 'test',
+    secretAccessKey: 'test'
+  }
+})
 
 const tableName = 'TestTable'
 

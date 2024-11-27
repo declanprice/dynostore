@@ -1,8 +1,13 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import {  eq, Store } from '../src'
+import { eq, Store } from '../src'
 import { wait } from './wait'
 
-const client = new DynamoDBClient({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-1' })
+const client = new DynamoDBClient({
+  endpoint: 'http://127.0.0.1:8000', region: 'eu-west-1', credentials: {
+    accessKeyId: 'test',
+    secretAccessKey: 'test'
+  }
+})
 
 const tableName = 'TestTable'
 

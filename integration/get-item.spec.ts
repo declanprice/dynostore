@@ -3,8 +3,12 @@ import { Store } from '../src'
 import { marshall } from '@aws-sdk/util-dynamodb'
 import { wait } from './wait'
 
-const client = new DynamoDBClient({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-1' })
-
+const client = new DynamoDBClient({
+  endpoint: 'http://127.0.0.1:8000', region: 'eu-west-1', credentials: {
+    accessKeyId: 'test',
+    secretAccessKey: 'test'
+  }
+})
 const tableName = 'TestTable'
 
 const store = new Store(tableName, client)
