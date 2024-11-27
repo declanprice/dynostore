@@ -12,6 +12,6 @@ Dynostore is suitable for developers who already understand the basics of the dy
 ## Install
 
 ```bash
-npm install @declanprice/noxa
+npm install @declanprice/dynostore
 ```
 

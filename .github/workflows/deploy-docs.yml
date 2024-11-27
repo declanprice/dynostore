@@ -21,8 +21,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Hosted GitHub runners have 7 GB of memory available, let's use 6 GB
-  NODE_OPTIONS: --max-old-space-size=6144
+  # Hosted GitHub runners have 7 GB of memory available, let's use 2 GB
+  NODE_OPTIONS: --max-old-space-size=2048
 
 jobs:
   # Single deploy job since we're just deploying

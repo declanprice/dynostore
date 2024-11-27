@@ -1,6 +1,6 @@
 {
   "name": "@declanprice/dynostore",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "lightweight query builder for dynamodb using AWS SDK V3",
   "main": "./dist/index.js",
   "scripts": {

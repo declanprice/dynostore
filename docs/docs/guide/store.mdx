@@ -8,7 +8,7 @@ sidebar_position: 1
 ## Creating a store
 
 ```tsx title="Create a store"
-import { Store } from '@declanprice/noxa'
+import { Store } from '@declanprice/dynostore'
 
 const store = new Store('customers', new new DynamoDBClient())
 ```
@@ -18,7 +18,7 @@ const store = new Store('customers', new new DynamoDBClient())
 Stores expose high level api builders for each dynamodb query type (GetItem/PutItem/DeleteItem/QueryItems/ScanItems).
 
 ```tsx title="Usage"
-import { Store } from '@declanprice/noxa'
+import { Store } from '@declanprice/dynostore'
 
 const store = new Store('customers', new new DynamoDBClient())
 
