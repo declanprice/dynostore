@@ -6,19 +6,21 @@ sidebar_position: 6
 
 ### Store.query()
 
+Create a query request.
+
 ```tsx
+import { DynamoDBClient } from '@aws-cdk/client-dynamodb'
 import { Store } from '@declanprice/dynostore'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const query = await store.query<CustomerItem>();
+const query = store.query<CustomerItem>()
 ```
 
 
 ### pk(field, value)
 
-Queries must always contain a partition key consisting of the field and static value.
-
+Provide the partition item key to be used.
 
 ```tsx
 query.pk('pk', '123');
@@ -26,7 +28,7 @@ query.pk('pk', '123');
 
 ### sk(condition)
 
-Queries can provide an optional sort key condition, sort key conditions supports the following conditions.
+Provide an optional sort key condition, sort key conditions supports the following conditions.
 
 ```tsx
 query.sk(eq('sk', 'Customer'))
@@ -40,7 +42,7 @@ query.sk(between('sk', 1, 2))
 
 ### using(index)
 
-Queries can optionally target a specific index
+Use a specific index.
 
 ```tsx
 query.using('indexName')
@@ -48,7 +50,7 @@ query.using('indexName')
 
 ### filter(...conditions)
 
-Queries can be filtered using any combination of conditions, conditions must always be seperated by either and(), or() conditions otherwise an error fill be thrown.
+Provide any combination of supported dynamodb conditions, multiple conditions must be seperated by either `and()`, `or()` conditions otherwise an error will be thrown.
 
 ```tsx
 query.filter(
@@ -62,9 +64,9 @@ query.filter(
 )
 ```
 
-### project(projection)
+### project(string)
 
-Queries optionally project specific attributes using comma seperated values.
+Project specific fields to be returned.
 
 ```tsx
 query.project('id,fistName,lastName')
@@ -72,7 +74,7 @@ query.project('id,fistName,lastName')
 
 ### limit(count)
 
-Queries can be limited to a specific amount of items returned.
+Restrict the number of items to be returned.
 
 ```tsx
 query.limit(100)
@@ -80,15 +82,15 @@ query.limit(100)
 
 ### startAt(key)
 
-Queries can be started from a specific key for pagination purposes, if the previous query returns a valid `lastKey` property you can pass it into the next query.
+Provide a starting key for pagination purposes, if the previous query returns a valid `lastKey` item you can pass it to the next query.
 
 ```tsx
 query.startAt({id: '123'})
 ```
 
-### sort(direction)
+### sort('asc' | 'desc')
 
-Queries optionally can be sorted in ascending or descending order, the default is ascending.
+Provide an optional sort direction in ascending or descending order, the default is ascending.
 
 ```tsx
 query.sort('asc')
@@ -98,14 +100,12 @@ query.sort('desc')
 
 ### exec()
 
-Queries will only be run once you specifically execute it.
+Execute the query.
 
 ```tsx
-const response: QueryResponse<CustomerItem>[] = query.exec();
+const response: QueryResponse<CustomerItem>[] = await query.exec()
 
-const items = response.items;
-
-const lastKey = response.lastKey;
+const { items, lastKey }  = response
 ```
 
 A `QueryResponse` contains the following properties:
@@ -113,5 +113,5 @@ A `QueryResponse` contains the following properties:
 
 | Syntax      | Description |
 | ----------- | ----------- |
-| items       | when items are found the items property will be an array of unmarshalled items, if no items are found it will be an empty array |
-| lastKey     | If there are more items available then lastKey will be populated with the last key returned from the query |
+| items       | an array of unmarshalled items, when no items are found the array will be empty |
+| lastKey     | if more items are avaiable to query then `lastKey` will be the item key to use in the next query |

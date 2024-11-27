@@ -6,17 +6,20 @@ sidebar_position: 7
 
 ### Store.scan()
 
+Create a scan request.
+
 ```tsx
+import { DynamoDBClient } from '@aws-cdk/client-dynamodb'
 import { Store } from '@declanprice/dynostore'
 
 const store = new Store('customers', new new DynamoDBClient())
 
-const scan = await store.scan<CustomerItem | OtherItemType>();
+const scan = store.scan<CustomerItem | OtherItemType>()
 ```
 
 ### using(index)
 
-Scans can optionally target a specific index
+Use a specific index.
 
 ```tsx
 scan.using('indexName')
@@ -24,7 +27,7 @@ scan.using('indexName')
 
 ### filter(...conditions)
 
-Scans can be filtered using any combination of conditions, conditions must always be seperated by either and(), or() conditions otherwise an error fill be thrown.
+Provide any combination of supported dynamodb conditions, multiple conditions must be seperated by either `and()`, `or()` conditions otherwise an error will be thrown.
 
 ```tsx
 scan.filter(
@@ -40,7 +43,7 @@ scan.filter(
 
 ### project(projection)
 
-Scans optionally project specific attributes using comma seperated values.
+Project specific fields to be returned.
 
 ```tsx
 scan.project('id,fistName,lastName')
@@ -48,7 +51,7 @@ scan.project('id,fistName,lastName')
 
 ### limit(count)
 
-Scans can be limited to a specific amount of items returned.
+Restrict the number of items to be returned.
 
 ```tsx
 scan.limit(100)
@@ -56,7 +59,7 @@ scan.limit(100)
 
 ### startAt(key)
 
-Scans can be started from a specific key for pagination purposes, if the previous query returns a valid `lastKey` property you can pass it into the next query.
+Provide a starting key for pagination purposes, if the previous query returns a valid `lastKey` item you can pass it to the next query.
 
 ```tsx
 scan.startAt({id: '123'})
@@ -64,7 +67,7 @@ scan.startAt({id: '123'})
 
 ### sort(direction)
 
-Scans can optionally can be sorted in ascending or descending order, the default is ascending.
+Provide an optional sort direction in ascending or descending order, the default is ascending.
 
 ```tsx
 scan.sort('asc')
@@ -74,7 +77,7 @@ scan.sort('desc')
 
 ### parallel(totalSegments, currentSegment)
 
-Scans can optionally be ran in parallel, you must provide the total segments and the current segment.
+Optionally run the scan in parallel, you must provide the total segments and the current segment.
 
 ```tsx
 scan.parallel(4, 1);
@@ -82,14 +85,12 @@ scan.parallel(4, 1);
 
 ### exec()
 
-Scans will only be run once you specifically execute it.
+Execute the query.
 
 ```tsx
-const response: ScanResponse<CustomerItem | OtherItemType>[] = scan.exec();
+const response: ScanResponse<CustomerItem | OtherItemType>[] = await scan.exec();
 
-const items = response.items;
-
-const lastKey = response.lastKey;
+const { items, lastKey }  = response;
 ```
 
 A `ScanResponse` contains the following properties:
@@ -97,5 +98,5 @@ A `ScanResponse` contains the following properties:
 
 | Syntax      | Description |
 | ----------- | ----------- |
-| items       | when items are found the items property will be an array of unmarshalled items, if no items are found it will be an empty array |
-| lastKey     | If there are more items available then lastKey will be populated with the last key returned from the query |
+| items       | an array of unmarshalled items, when no items are found the array will be empty |
+| lastKey     | if more items are avaiable to query then `lastKey` will be the item key to use in the next query |
